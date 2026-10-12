@@ -1,6 +1,6 @@
 ---
 name: humanize-my-voice
-description: Edit drafts to remove AI-slop patterns while keeping and strengthening Dr. Padmashree's own voice — warm, reverent, relationally precise Indian academic English. Use for thesis sections, acknowledgements, academic papers, teacher-education writing, essays and prose; or to detect AI patterns in a draft without rewriting. Not for judging whether AI wrote a text.
+description: Edit drafts to remove AI-slop patterns while keeping and strengthening Dr. Padmashree's own voice — rights-based, legally grounded, field-rooted research prose and warm, reverent personal writing in Indian academic English. Use for thesis sections, acknowledgements, academic papers, teacher-education writing, essays and prose; or to detect AI patterns in a draft without rewriting. Not for judging whether AI wrote a text.
 ---
 
 # Humanize My Voice
@@ -22,7 +22,25 @@ You are a careful human editor. Remove AI patterns and errors, then make the wri
 
 ## The author's voice profile
 
-Preserve and strengthen these traits:
+She writes in two registers. Identify which one the draft uses; some pieces (a thesis) use both.
+
+### Register 1 — Research and policy writing (papers, thesis chapters, reports)
+
+Preserve and strengthen:
+
+- **Rights-based conviction.** She writes as an advocate for children and public education, not a neutral observer. Keep the stance and the moral urgency: "the need of the hour", "on a war-foot basis", "it is the right time". Allow one urgency phrase per section, not one per sentence.
+- **Legal and historical grounding.** Exact Acts, Sections, Articles, case names and years (Mohini Jain vs. State of Karnataka, 1992; Article 21A; Section 9; Section 12(1)(c)). Never drop or paraphrase a legal citation; check spellings stay consistent across the paper.
+- **Earthy, homely analogies.** "Like assigning the job of chewing without the provision of teeth." This is her signature. It is **not** a fake-profound kicker: it is concrete, rooted in everyday life, and argues a point. Keep it; at most sharpen the wording. Never add new ones she did not write.
+- **Voices from the field.** She reports what functionaries, teachers and children actually said ("They stated that the researcher was the first person who visited…"; the President of Bramarakutalu's concern). Keep these; they are her evidence and her humanity. Prefer reported speech with a named role over "It was found that".
+- **Irony at the gap between law and ground.** "It is ironical to know that they know nothing of the RTE Act." Keep the observation; make the sentence clean.
+- **Local terms with care.** Makkala Grama Sabhe, Gram Sabha, Gram Panchayat, SDMC. Keep them; gloss once on first use; then keep the spelling consistent.
+- **Epigraph and elder voices.** She opens with a philosophical quotation and closes with a historical one (Jayaprakash Narayan, 1961). Keep this frame.
+- **"The researcher".** Third-person self-reference is her academic convention. Keep it unless the target journal asks for "I"/"we".
+- **Structure.** Background → legal framework → field findings → recommendations → action agenda (table) → conclusion. Keep it.
+
+### Register 2 — Personal and gratitude writing (acknowledgements, dedications, tributes)
+
+Preserve and strengthen:
 
 - **Reverence and devotion.** "I bow to…", "I have no words to thank…", "blessings of my mother". Respect in the guru–shishya tradition. Keep it; never flatten into corporate thanks.
 - **Personal ownership.** Phrases like "this dream work of mine". Keep the first person and the emotional stake.
@@ -33,6 +51,21 @@ Preserve and strengthen these traits:
 - **Indian English register.** Keep British/Indian spelling (internalise, finalise, learnt, co-operation) and natural Indian academic idiom. Fix only real errors.
 
 Make it *better*: one clear expression of thanks per person, varied sentence openings, the specific act of help in place of an empty adjective, correct grammar.
+
+### Her recurring habits to tighten (both registers)
+
+These are human habits, not AI ones, but they weaken her prose. Fix them gently.
+
+- **"It was found that…" / "It is seen that…" / "It is learnt that…"** — repeated many times. Vary: name who said it ("GP Presidents said…", "Teachers reported…") or state the finding directly.
+- **"In general … in particular"** — used several times per page. Keep the first; rewrite the rest.
+- **Long "lack of" chains** — "lack of awareness, lack of information flow, lack of human resources, lack of…". Group into one clause or a short list.
+- **Verbless "to be" instructions** — "Orientation to be provided to…", "The evolution and sustainability to be attained…". Make them full sentences: "…should be provided", "…should be given".
+- **Duplicated content** — the same recommendations as a run-on paragraph and again as a numbered list. Keep one (the list).
+- **Run-on sentences** — split where two findings share one sentence.
+- **Missing articles and prepositions** — "play pivotal role" → "play a pivotal role"; "discusses on" → "discusses"; "with lot of" → "with a lot of".
+- **Inconsistent spellings and acronyms** — RTE / RtE / Rte; Panchayat / Panchyat / Panchayts; Unnikrishnan / Unnikrishan; neighbourhood / neighborhood. Pick one (British/Indian) and apply it throughout.
+- **Word slips** — "state holders" → "stakeholders"; "brining" → "bringing"; "to minimum" → "minimal"; "discuses" → "discusses".
+- **Light puffery** — "ushered in a new era", "paradigm shift", "a great deal", "in a big way", "a whole lot of", "simply means". Replace with the plain fact she already gives.
 
 ## Patterns to fix
 
@@ -55,7 +88,7 @@ Make it *better*: one clear expression of thanks per person, varied sentence ope
 12. Importance puffery — "a testament to", "pivotal moment", "plays a vital role".
 13. Superficial -ing tails — "…highlighting / showcasing / underscoring…".
 14. Promotional language with no specifics.
-15. Fake-profound kickers — aphorism or mic-drop endings.
+15. Fake-profound kickers — abstract aphorism or mic-drop endings. **Exception:** her concrete, earthy analogies that argue a point (see Register 1) stay.
 16. Vague association — "closely linked to" when the role is known.
 17. Portable sentences — could describe anyone; replace with the specific fact *from the draft*.
 18. Abstraction where the draft already holds a concrete detail.
@@ -114,4 +147,4 @@ Make it *better*: one clear expression of thanks per person, varied sentence ope
    - Any duplicate names, inconsistent titles or doubtful spellings? List under *Please check*; do not silently change.
 6. Output: *Voice noticed* → edited text → *Please check*.
 
-See `examples/acknowledgement.md` for a worked before/after.
+Worked before/afters: `examples/acknowledgement.md` (Register 2) and `examples/research-paper.md` (Register 1).
