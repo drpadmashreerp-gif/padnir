@@ -26,7 +26,7 @@ Source: "Implementation of RTE by Gram Panchayat: Challenges and Action Agenda".
 
 **Before:** The core issues are lack of awareness, lack of systemic information flow, … lack of human resources, lack of education, … lack of resources and devolution of powers and finances…
 
-**After:** The core issues are a lack of awareness and of systematic information flow; a gap between legislation and implementation procedures; little participation of GP functionaries in education, who are overloaded with other work; and a lack of human and financial resources, with no devolution of powers and finances to implement RTE at the grassroots.
+**After:** The core issues are a lack of awareness and of systematic information flow; a gap between legislation and implementation procedures; little participation of GP functionaries in education, who are overloaded with other work; low levels of education; the challenges of decentralising education management; and a lack of human and financial resources, with no devolution of powers and finances to implement RTE at the grassroots.
 
 ## 5. Verbless "to be" instruction
 
