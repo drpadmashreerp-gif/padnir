@@ -44,4 +44,4 @@
 
 - Same name in two roles (Prof. Niranjanaradhya V. P. listed among professors and as husband).
 - Official institution names and spellings (University of Mysore; Himachal Pradesh University; Uttarakhand; Ramanagara).
-- Any rephrasing of a feeling ("inconsistency in caring") — confirm it still feels true.
+- Any rephrasing of a feeling ("inconsistency in caring"); confirm that it still feels true.
