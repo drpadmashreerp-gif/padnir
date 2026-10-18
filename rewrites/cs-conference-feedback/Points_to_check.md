@@ -1,20 +1,138 @@
 # Points to check before submission
 
-Research Studies Feedback Notes (145 notes): figures and names that look inconsistent in the original. They are carried over unchanged unless stated.
+## Still open
 
-- Note 1 vs Note 4: Note 1 counts 5+178 studies (2024-25) and 4+150 (2025-26) = 337; Note 4 says the Compilation has 234 studies (128 + 106). Reconcile or explain (proposals vs. completed?).
-- Note 18: third Room to Read study lists 37 schools but 50 headteachers; check the figure.
-- Note 21: a DIET Bengaluru Rural study whose sample is drawn from Raichur district; confirm the district.
-- Notes 25, 26, 28: study titles were tidied (the originals began "In the academic year 2024-25, ..." or were in capitals with "ACADAMIC"); confirm the registered titles.
-- Note 46: "Sri N.K. Lakshmamma" pairs "Sri" with a woman's name; confirm the honorific.
-- Note 52: the original read "Mr. Ashwathanarayana N., Senior DIET" with designation "Lecturer"; I used "Sri Ashwathanarayana N., Senior Lecturer". Confirm.
-- Notes 42-45: names began with "1." in the original (for example, "1. Smt. Netravathi"); the numeral was removed. Check whether co-researchers (2., 3.) were dropped.
-- Note 53: study title says "Kannada Medium Primary Schools (KPS)" but the note is about Karnataka Public Schools; confirm the title.
-- Note 64: "five per cent of the thirty schools" (1.5 schools) lacked a library room; check the figure.
-- Note 70: the original said "KPN pre-primary schools"; I wrote "pre-primary schools". Confirm whether KPS was meant.
-- Note 99: the sample is given as 802, but its parts (690 + 41 + 10 + 20) total 761; check.
-- Note 121: the original recommendations spoke of "Anganwadi centres" although the study is on Special Readiness Centres; I wrote "centres". Confirm.
-- Notes 117 and 122: the same author appears as "Gopalkrishna S. Bhat" and "Gopalakrishna Bhat"; use one spelling.
-- Note 130: the original recommendations contained a garbled line ("selected Government Fraud Schools of Mandya District"); I dropped it.
-- Note 138: 54 per cent of parents attended PTMs, yet 93 per cent "discussed their children's studies at PTMs"; check the base of each figure.
-- Note 145: the original name was "Pushpalatha K.M. Sr" with designation "Lecturer"; confirm whether "Senior Lecturer" was meant.
+- Note 1 vs Note 4: Note 1 counts 5 + 178 studies (2024-25) and 4 + 150 (2025-26), a total of 337; Note 4 says the Compilation has 234 studies (128 + 106). Reconcile the figures or explain the difference (for example, proposals versus completed studies).
+
+## Removed from the document
+
+These 21 notes (original numbering) were removed because of the points raised earlier: 18, 21, 25, 26, 28, 42, 43, 44, 45, 46, 52, 53, 64, 70, 99, 117, 121, 122, 130, 138, 145. The remaining 124 notes are renumbered 1 to 124.
+
+## New number and original number
+
+| New | Original |
+|---|---|
+| 1 | 1 |
+| 2 | 2 |
+| 3 | 3 |
+| 4 | 4 |
+| 5 | 5 |
+| 6 | 6 |
+| 7 | 7 |
+| 8 | 8 |
+| 9 | 9 |
+| 10 | 10 |
+| 11 | 11 |
+| 12 | 12 |
+| 13 | 13 |
+| 14 | 14 |
+| 15 | 15 |
+| 16 | 16 |
+| 17 | 17 |
+| 18 | 19 |
+| 19 | 20 |
+| 20 | 22 |
+| 21 | 23 |
+| 22 | 24 |
+| 23 | 27 |
+| 24 | 29 |
+| 25 | 30 |
+| 26 | 31 |
+| 27 | 32 |
+| 28 | 33 |
+| 29 | 34 |
+| 30 | 35 |
+| 31 | 36 |
+| 32 | 37 |
+| 33 | 38 |
+| 34 | 39 |
+| 35 | 40 |
+| 36 | 41 |
+| 37 | 47 |
+| 38 | 48 |
+| 39 | 49 |
+| 40 | 50 |
+| 41 | 51 |
+| 42 | 54 |
+| 43 | 55 |
+| 44 | 56 |
+| 45 | 57 |
+| 46 | 58 |
+| 47 | 59 |
+| 48 | 60 |
+| 49 | 61 |
+| 50 | 62 |
+| 51 | 63 |
+| 52 | 65 |
+| 53 | 66 |
+| 54 | 67 |
+| 55 | 68 |
+| 56 | 69 |
+| 57 | 71 |
+| 58 | 72 |
+| 59 | 73 |
+| 60 | 74 |
+| 61 | 75 |
+| 62 | 76 |
+| 63 | 77 |
+| 64 | 78 |
+| 65 | 79 |
+| 66 | 80 |
+| 67 | 81 |
+| 68 | 82 |
+| 69 | 83 |
+| 70 | 84 |
+| 71 | 85 |
+| 72 | 86 |
+| 73 | 87 |
+| 74 | 88 |
+| 75 | 89 |
+| 76 | 90 |
+| 77 | 91 |
+| 78 | 92 |
+| 79 | 93 |
+| 80 | 94 |
+| 81 | 95 |
+| 82 | 96 |
+| 83 | 97 |
+| 84 | 98 |
+| 85 | 100 |
+| 86 | 101 |
+| 87 | 102 |
+| 88 | 103 |
+| 89 | 104 |
+| 90 | 105 |
+| 91 | 106 |
+| 92 | 107 |
+| 93 | 108 |
+| 94 | 109 |
+| 95 | 110 |
+| 96 | 111 |
+| 97 | 112 |
+| 98 | 113 |
+| 99 | 114 |
+| 100 | 115 |
+| 101 | 116 |
+| 102 | 118 |
+| 103 | 119 |
+| 104 | 120 |
+| 105 | 123 |
+| 106 | 124 |
+| 107 | 125 |
+| 108 | 126 |
+| 109 | 127 |
+| 110 | 128 |
+| 111 | 129 |
+| 112 | 131 |
+| 113 | 132 |
+| 114 | 133 |
+| 115 | 134 |
+| 116 | 135 |
+| 117 | 136 |
+| 118 | 137 |
+| 119 | 139 |
+| 120 | 140 |
+| 121 | 141 |
+| 122 | 142 |
+| 123 | 143 |
+| 124 | 144 |
