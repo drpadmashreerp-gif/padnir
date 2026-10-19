@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>MedPanel</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <dialog id="consent">
+    <form method="dialog" id="consent-form">
+      <h2>Before you upload</h2>
+      <p>MedPanel explains blood test results. Please read and confirm each point.</p>
+      <label><input type="checkbox" required> I understand MedPanel is an educational aid, <strong>not a diagnosis or medical advice</strong>, and that I should discuss results with a qualified clinician. In an emergency I will contact emergency services.</label>
+      <label><input type="checkbox" required> I consent to my report being processed by Anthropic's Claude API. Names, IDs, phone numbers and emails are removed from text before sending; <strong>scanned images and image-only PDFs are sent as-is</strong> and may contain identifiers.</label>
+      <label><input type="checkbox" required> I understand that by default <strong>nothing is stored</strong>: the file is processed in memory and discarded, and results disappear when I close this tab. I can choose to save results to an encrypted history on this device only.</label>
+      <label><input type="checkbox" required> I am the person in this report, or I have their permission to upload it.</label>
+      <div class="row"><button type="submit" class="primary">I agree</button><a href="about:blank" class="button">Leave</a></div>
+    </form>
+  </dialog>
+
+  <header>
+    <h1>MedPanel</h1>
+    <p class="muted">Multi-specialist review of your blood report · <span id="mode"></span></p>
+  </header>
+
+  <main>
+    <section class="card" id="upload-card">
+      <form id="upload-form">
+        <label for="file">Blood report (PDF, PNG, JPEG or WebP, up to 15 MB)</label>
+        <input id="file" name="report" type="file" accept="application/pdf,image/png,image/jpeg,image/webp" required>
+        <button type="submit" class="primary" id="analyse-btn">Analyse report</button>
+      </form>
+      <p id="status" class="muted" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="report" hidden>
+      <div id="critical-banner" class="critical" role="alert" hidden></div>
+      <div class="card">
+        <div class="row space">
+          <h2 id="headline"></h2>
+          <span id="urgency" class="pill"></span>
+        </div>
+        <p id="summary"></p>
+        <div class="row">
+          <button id="pdf-btn">Export PDF</button>
+          <button id="save-btn">Save to encrypted history</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Results</h3>
+        <div class="legend">
+          <span class="flag critical_high">Critical</span><span class="flag high">High / Low</span>
+          <span class="flag normal">Normal</span><span class="flag implausible">Verify</span><span class="flag unknown">No range</span>
+        </div>
+        <div class="table-wrap"><table id="results"><thead><tr><th>Test</th><th>Result</th><th>Unit</th><th>Reference</th><th>Flag</th></tr></thead><tbody></tbody></table></div>
+      </div>
+
+      <div class="card" id="synthesis"></div>
+      <div id="specialists" class="grid"></div>
+    </section>
+
+    <section class="card" id="trends">
+      <h3>Trends across reports</h3>
+      <p class="muted" id="trend-note">Analyse two or more reports, or unlock your history, to see trends.</p>
+      <div class="row">
+        <select id="trend-select" aria-label="Analyte"></select>
+      </div>
+      <canvas id="trend-chart" height="220"></canvas>
+    </section>
+
+    <section class="card" id="history">
+      <h3>Encrypted history (this device only)</h3>
+      <p class="muted">Off by default. Saved results are encrypted with AES-256-GCM using a passphrase only you know. If you forget it, the history cannot be recovered.</p>
+      <form id="vault-form" class="row">
+        <input type="password" id="passphrase" autocomplete="new-password" minlength="10" placeholder="Passphrase (10+ characters)" required>
+        <button type="submit">Unlock</button>
+      </form>
+      <div class="row">
+        <button id="vault-export" type="button">Download encrypted backup</button>
+        <label class="button">Restore backup<input type="file" id="vault-import" accept="application/json" hidden></label>
+        <button id="vault-wipe" type="button" class="danger">Delete all history</button>
+      </div>
+      <p id="vault-status" class="muted" role="status"></p>
+    </section>
+  </main>
+
+  <footer class="muted">MedPanel is not a medical device. Critical-value flags come from fixed rules; labs set their own limits.</footer>
+  <script src="/vendor/chart.umd.min.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
