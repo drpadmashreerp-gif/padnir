@@ -1,0 +1,9 @@
+{
+  "name": "elt-guide-app",
+  "version": "1.0.0",
+  "description": "English Language Teaching: A Sequenced Guide — 100 units with a Phonetics Lab (IPA chart and activities). Node backend, no dependencies.",
+  "main": "server.js",
+  "scripts": { "start": "node server.js", "test": "node --test" },
+  "engines": { "node": ">=18" },
+  "license": "UNLICENSED"
+}

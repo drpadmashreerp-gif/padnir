@@ -1,0 +1,79 @@
+{
+  "note": "The 44 phonemes of standard Southern British English, with the symbols used on the British Council / Cambridge phonemic chart. Layout in this app is original (grouped tables), not a copy of the Underhill chart design.",
+  "monophthongs": [
+    {"s": "iː", "w": "sheep", "t": "ʃiːp", "more": ["see", "green", "key"], "h": "close", "b": "front", "r": false, "long": true},
+    {"s": "ɪ", "w": "ship", "t": "ʃɪp", "more": ["sit", "busy", "women"], "h": "near-close", "b": "near-front", "r": false, "long": false},
+    {"s": "ʊ", "w": "good", "t": "ɡʊd", "more": ["book", "put", "could"], "h": "near-close", "b": "near-back", "r": true, "long": false},
+    {"s": "uː", "w": "shoot", "t": "ʃuːt", "more": ["blue", "food", "two"], "h": "close", "b": "back", "r": true, "long": true},
+    {"s": "e", "w": "bed", "t": "bed", "more": ["head", "said", "any"], "h": "mid", "b": "front", "r": false, "long": false},
+    {"s": "ə", "w": "teacher", "t": "ˈtiːtʃə", "more": ["about", "banana", "doctor"], "h": "mid", "b": "central", "r": false, "long": false},
+    {"s": "ɜː", "w": "bird", "t": "bɜːd", "more": ["word", "learn", "her"], "h": "close-mid", "b": "central", "r": false, "long": true},
+    {"s": "ɔː", "w": "door", "t": "dɔː", "more": ["saw", "talk", "four"], "h": "close-mid", "b": "back", "r": true, "long": true},
+    {"s": "æ", "w": "cat", "t": "kæt", "more": ["man", "bag", "black"], "h": "near-open", "b": "front", "r": false, "long": false},
+    {"s": "ʌ", "w": "up", "t": "ʌp", "more": ["cup", "love", "money"], "h": "open-mid", "b": "central", "r": false, "long": false},
+    {"s": "ɑː", "w": "far", "t": "fɑː", "more": ["car", "heart", "father"], "h": "open", "b": "near-back", "r": false, "long": true},
+    {"s": "ɒ", "w": "on", "t": "ɒn", "more": ["hot", "dog", "what"], "h": "near-open", "b": "back", "r": true, "long": false}
+  ],
+  "diphthongs": [
+    {"s": "ɪə", "w": "here", "t": "hɪə", "more": ["ear", "near", "idea"], "from": "ɪ", "to": "ə"},
+    {"s": "eɪ", "w": "wait", "t": "weɪt", "more": ["day", "rain", "great"], "from": "e", "to": "ɪ"},
+    {"s": "ʊə", "w": "tourist", "t": "ˈtʊərɪst", "more": ["pure", "cure", "sure"], "from": "ʊ", "to": "ə"},
+    {"s": "ɔɪ", "w": "boy", "t": "bɔɪ", "more": ["toy", "coin", "noise"], "from": "ɔː", "to": "ɪ"},
+    {"s": "əʊ", "w": "show", "t": "ʃəʊ", "more": ["go", "home", "boat"], "from": "ə", "to": "ʊ"},
+    {"s": "eə", "w": "hair", "t": "heə", "more": ["where", "chair", "care"], "from": "e", "to": "ə"},
+    {"s": "aɪ", "w": "my", "t": "maɪ", "more": ["time", "fly", "eye"], "from": "æ", "to": "ɪ"},
+    {"s": "aʊ", "w": "cow", "t": "kaʊ", "more": ["now", "house", "out"], "from": "æ", "to": "ʊ"}
+  ],
+  "consonants": [
+    {"s": "p", "w": "pea", "t": "piː", "more": ["pen", "happy", "stop"], "v": false, "place": "bilabial", "manner": "plosive"},
+    {"s": "b", "w": "boat", "t": "bəʊt", "more": ["bag", "rubber", "job"], "v": true, "place": "bilabial", "manner": "plosive"},
+    {"s": "t", "w": "tea", "t": "tiː", "more": ["ten", "water", "cat"], "v": false, "place": "alveolar", "manner": "plosive"},
+    {"s": "d", "w": "dog", "t": "dɒɡ", "more": ["day", "ladder", "bed"], "v": true, "place": "alveolar", "manner": "plosive"},
+    {"s": "tʃ", "w": "cheese", "t": "tʃiːz", "more": ["chair", "teacher", "watch"], "v": false, "place": "postalveolar", "manner": "affricate"},
+    {"s": "dʒ", "w": "June", "t": "dʒuːn", "more": ["jam", "age", "bridge"], "v": true, "place": "postalveolar", "manner": "affricate"},
+    {"s": "k", "w": "car", "t": "kɑː", "more": ["key", "school", "back"], "v": false, "place": "velar", "manner": "plosive"},
+    {"s": "ɡ", "w": "go", "t": "ɡəʊ", "more": ["get", "bigger", "dog"], "v": true, "place": "velar", "manner": "plosive"},
+    {"s": "f", "w": "fly", "t": "flaɪ", "more": ["fish", "phone", "laugh"], "v": false, "place": "labiodental", "manner": "fricative"},
+    {"s": "v", "w": "video", "t": "ˈvɪdiəʊ", "more": ["van", "seven", "live"], "v": true, "place": "labiodental", "manner": "fricative"},
+    {"s": "θ", "w": "think", "t": "θɪŋk", "more": ["three", "author", "bath"], "v": false, "place": "dental", "manner": "fricative"},
+    {"s": "ð", "w": "this", "t": "ðɪs", "more": ["they", "mother", "with"], "v": true, "place": "dental", "manner": "fricative"},
+    {"s": "s", "w": "see", "t": "siː", "more": ["sun", "city", "bus"], "v": false, "place": "alveolar", "manner": "fricative"},
+    {"s": "z", "w": "zoo", "t": "zuː", "more": ["zero", "easy", "is"], "v": true, "place": "alveolar", "manner": "fricative"},
+    {"s": "ʃ", "w": "shall", "t": "ʃæl", "more": ["shop", "station", "fish"], "v": false, "place": "postalveolar", "manner": "fricative"},
+    {"s": "ʒ", "w": "television", "t": "ˈtelɪvɪʒn", "more": ["measure", "usual", "garage"], "v": true, "place": "postalveolar", "manner": "fricative"},
+    {"s": "h", "w": "hat", "t": "hæt", "more": ["house", "behind", "who"], "v": false, "place": "glottal", "manner": "fricative"},
+    {"s": "m", "w": "man", "t": "mæn", "more": ["mother", "summer", "time"], "v": true, "place": "bilabial", "manner": "nasal"},
+    {"s": "n", "w": "now", "t": "naʊ", "more": ["name", "dinner", "sun"], "v": true, "place": "alveolar", "manner": "nasal"},
+    {"s": "ŋ", "w": "sing", "t": "sɪŋ", "more": ["ring", "finger", "thank"], "v": true, "place": "velar", "manner": "nasal"},
+    {"s": "l", "w": "love", "t": "lʌv", "more": ["leg", "yellow", "ball"], "v": true, "place": "alveolar", "manner": "lateral approximant"},
+    {"s": "r", "w": "red", "t": "red", "more": ["run", "very", "wrong"], "v": true, "place": "postalveolar", "manner": "approximant"},
+    {"s": "w", "w": "wet", "t": "wet", "more": ["window", "away", "one"], "v": true, "place": "bilabial (labial-velar)", "manner": "approximant"},
+    {"s": "j", "w": "yes", "t": "jes", "more": ["you", "yellow", "use"], "v": true, "place": "palatal", "manner": "approximant"}
+  ],
+  "minimalPairs": [
+    ["ship", "sheep", "ɪ", "iː"], ["sit", "seat", "ɪ", "iː"], ["full", "fool", "ʊ", "uː"], ["cat", "cut", "æ", "ʌ"],
+    ["bad", "bed", "æ", "e"], ["hat", "hut", "æ", "ʌ"], ["cot", "caught", "ɒ", "ɔː"], ["walk", "work", "ɔː", "ɜː"],
+    ["heart", "hat", "ɑː", "æ"], ["fan", "van", "f", "v"], ["thin", "tin", "θ", "t"], ["think", "sink", "θ", "s"],
+    ["they", "day", "ð", "d"], ["pen", "ben", "p", "b"], ["light", "right", "l", "r"], ["sip", "zip", "s", "z"],
+    ["shoe", "chew", "ʃ", "tʃ"], ["chin", "gin", "tʃ", "dʒ"], ["sin", "sing", "n", "ŋ"], ["west", "vest", "w", "v"],
+    ["coat", "goat", "k", "ɡ"], ["wait", "white", "eɪ", "aɪ"], ["hair", "here", "eə", "ɪə"], ["low", "law", "əʊ", "ɔː"]
+  ],
+  "stressWords": [
+    ["teacher", "Oo", "TEACH-er"], ["pencil", "Oo", "PEN-cil"], ["hotel", "oO", "ho-TEL"], ["ago", "oO", "a-GO"],
+    ["photograph", "Ooo", "PHO-to-graph"], ["camera", "Ooo", "CAM-er-a"], ["banana", "oOo", "ba-NA-na"], ["tomato", "oOo", "to-MA-to"],
+    ["doctor", "Oo", "DOC-tor"], ["begin", "oO", "be-GIN"], ["holiday", "Ooo", "HOL-i-day"], ["computer", "oOo", "com-PU-ter"],
+    ["window", "Oo", "WIN-dow"], ["July", "oO", "Ju-LY"], ["family", "Ooo", "FAM-i-ly"], ["potato", "oOo", "po-TA-to"],
+    ["garden", "Oo", "GAR-den"], ["afraid", "oO", "a-FRAID"], ["beautiful", "Ooo", "BEAU-ti-ful"], ["important", "oOo", "im-POR-tant"]
+  ],
+  "stressShift": [
+    ["record", "REcord (noun)", "reCORD (verb)"], ["present", "PREsent (noun)", "preSENT (verb)"],
+    ["object", "OBject (noun)", "obJECT (verb)"], ["permit", "PERmit (noun)", "perMIT (verb)"],
+    ["increase", "INcrease (noun)", "inCREASE (verb)"], ["export", "EXport (noun)", "exPORT (verb)"]
+  ],
+  "transcriptions": [
+    ["ʃɪp", "ship"], ["ʃiːp", "sheep"], ["θɪŋk", "think"], ["ðɪs", "this"], ["kæt", "cat"], ["kʌt", "cut"],
+    ["bɜːd", "bird"], ["fɑː", "far"], ["dɔː", "door"], ["ɡʊd", "good"], ["fuːd", "food"], ["dʒʌmp", "jump"],
+    ["tʃeə", "chair"], ["haʊs", "house"], ["bɔɪ", "boy"], ["həʊm", "home"], ["taɪm", "time"], ["jes", "yes"],
+    ["sɪŋ", "sing"], ["ˈmeʒə", "measure"], ["ˈwɔːtə", "water"], ["ˈtiːtʃə", "teacher"], ["ˈfəʊtəɡrɑːf", "photograph"], ["bəˈnɑːnə", "banana"]
+  ]
+}
