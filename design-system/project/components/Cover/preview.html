@@ -1,0 +1,52 @@
+<!-- @dsCard height=300 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Padnir Canvas</title>
+<style>
+  html, body { margin:0; height:100%; }
+  body { background:var(--canvas); color:var(--ink); font-family:var(--font-display); overflow:hidden; }
+  .cover { position:relative; width:960px; height:300px; overflow:hidden; }
+  .art { position:absolute; top:0; left:480px; width:480px; height:300px; overflow:hidden; }
+  .art svg { display:block; width:480px; height:300px; }
+  .blue { fill:var(--canvas-blue); }
+  .saffron { fill:var(--saffron); }
+  .teal { fill:var(--teal); }
+  .coral { fill:var(--coral); }
+  .mist { fill:var(--mist); }
+  .frame { rx:var(--radius-lg); }
+  .ring { fill:none; stroke:var(--on-blue); stroke-width:2px; opacity:.7; }
+  .words { position:absolute; left:32px; bottom:32px; max-width:440px; }
+  .name { margin:0; font-size:104px; line-height:.95; font-weight:800; letter-spacing:-.03em; color:var(--ink); }
+  .tag { margin:8px 0 0 4px; font-family:var(--font-text); font-size:14px; line-height:20px; color:var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 300" width="480" height="300">
+<!--
+  blocks      canvas-blue disc r150 bled off top-right (the overview); mist frame 208x170 bled off the bottom (radius-lg); teal frame 128x88 (radius-lg); saffron disc r48; coral disc r40
+  arrangement one large overview disc with topic satellites, staggered down-left like a Prezi path
+  pattern     literal motif: zoom rings - three concentric on-blue rings inside the overview disc at space-12 / space-16 steps, ending on a saffron target; the system is about zooming into a topic
+  scales      ring pitch 36 (~space-8+space-1), gaps space-6..space-12, radius-lg frames, radius-round discs
+-->
+<rect class="mist frame" x="0" y="150" width="208" height="170"/>
+<circle class="blue" cx="340" cy="100" r="150"/>
+<circle class="ring" cx="340" cy="100" r="112"/>
+<circle class="ring" cx="340" cy="100" r="76"/>
+<circle class="ring" cx="340" cy="100" r="40"/>
+<circle class="saffron" cx="340" cy="100" r="16"/>
+<rect class="teal frame" x="40" y="32" width="128" height="88"/>
+<circle class="saffron" cx="112" cy="222" r="48"/>
+<circle class="coral" cx="244" cy="252" r="40"/>
+</svg>
+</div>
+<div class="words">
+<h1 class="name">Padnir<br>Canvas</h1>
+<p class="tag">Zoom into the evidence, then step back to see the whole.</p>
+</div>
+</div>
+</body>
+</html>

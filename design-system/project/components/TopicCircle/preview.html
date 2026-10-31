@@ -1,0 +1,12 @@
+<!-- @dsCard group="Canvas" height=200 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>TopicCircle — preview</title></head>
+<body>
+<div id="root" class="pc-stage"></div>
+<script>
+var P = window.PadnirCanvas, r = document.getElementById('root');
+[['Context','blue'],['Evidence','teal'],['Gaps','coral'],['Proposals','saffron']].forEach(function (t, i) { r.appendChild(P.TopicCircle({number: i + 1, label: t[0], hue: t[1], current: i === 1})); });
+</script>
+</body>
+</html>

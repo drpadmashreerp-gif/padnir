@@ -1,0 +1,12 @@
+<!-- @dsCard group="Data" height=260 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>DataTable — preview</title></head>
+<body>
+<div id="root" class="pc-stage"></div>
+<script>
+var P = window.PadnirCanvas, r = document.getElementById('root');
+r.appendChild(P.DataTable({caption: 'Training reach by district (illustrative)', columns: [{label: 'District'}, {label: 'Teachers', numeric: true}, {label: 'Trained', numeric: true}, {label: 'Share', numeric: true}], rows: [{cells: ['Mysuru', '9,840', '7,210', '73%']}, {cells: ['Belagavi', '12,305', '8,020', '65%']}, {cells: ['Kalaburagi', '8,410', '3,190', '38%'], flag: true}]}));
+</script>
+</body>
+</html>

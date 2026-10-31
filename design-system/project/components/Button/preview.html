@@ -1,0 +1,15 @@
+<!-- @dsCard group="Actions" height=96 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Button — preview</title></head>
+<body>
+<div id="root" class="pc-stage"></div>
+<script>
+var P = window.PadnirCanvas, r = document.getElementById('root');
+var row = document.createElement('div'); row.className = 'pc-row'; r.appendChild(row);
+row.appendChild(P.Button({label: 'Start the talk', variant: 'primary'}));
+row.appendChild(P.Button({label: 'Show sources'}));
+row.appendChild(P.Button({label: 'Back to overview', variant: 'ghost'}));
+</script>
+</body>
+</html>

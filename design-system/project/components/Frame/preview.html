@@ -1,0 +1,14 @@
+<!-- @dsCard group="Canvas" height=340 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Frame — preview</title></head>
+<body>
+<div id="root" class="pc-stage"></div>
+<script>
+var P = window.PadnirCanvas, r = document.getElementById('root');
+r.appendChild(P.Frame({hue: 'teal', eyebrow: 'Research capacity', numeral: '7/10', title: 'DIETs without a research grant', body: 'Most district institutes reported no dedicated funds for research in the last year.', source: 'Illustrative figure — replace with report data.', zoom: true}));
+r.appendChild(P.Frame({hue: 'saffron', eyebrow: 'School libraries', title: 'Books reach the shelf, not the reader', body: 'Collections exist in most schools; regular borrowing periods are rarer.', source: 'Illustrative text.'}));
+r.appendChild(P.Frame({quiet: true, eyebrow: 'Aside', title: 'How we read this', body: 'Figures are self-reported by institutions and may undercount.'}));
+</script>
+</body>
+</html>
