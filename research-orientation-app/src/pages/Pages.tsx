@@ -30,8 +30,8 @@ export function Home() {
   return (
     <div className="space-y-6">
       <section className="rounded-2xl bg-gradient-to-br from-teal-800 to-emerald-700 text-white p-6 md:p-10">
-        <p className="uppercase tracking-wider text-xs opacity-80">Department of School Education and Literacy · Karnataka</p>
-        <p lang="kn" className="text-sm opacity-90 mt-1">ಶಾಲಾ ಶಿಕ್ಷಣ ಮತ್ತು ಸಾಕ್ಷರತಾ ಇಲಾಖೆ · ಕರ್ನಾಟಕ</p>
+        <p className="uppercase tracking-wider text-xs opacity-80">For DIET faculty · examples from Karnataka school education</p>
+        <p lang="kn" className="text-sm opacity-90 mt-1">ಡಯಟ್ ಉಪನ್ಯಾಸಕರಿಗಾಗಿ · ಕರ್ನಾಟಕದ ಶಾಲಾ ಶಿಕ್ಷಣದ ಉದಾಹರಣೆಗಳೊಂದಿಗೆ</p>
         <h1 className="text-3xl md:text-4xl font-bold mt-2">{T.en.appTitle}</h1>
         <p lang="kn" className="text-2xl md:text-3xl font-semibold mt-1">{T.kn.appTitle}</p>
         <p className="mt-2 opacity-90">{T.en.subtitle}</p><p lang="kn" className="opacity-90">{T.kn.subtitle}</p>
