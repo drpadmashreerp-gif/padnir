@@ -48,3 +48,36 @@ The tone is measured, factual and courteous. It thanks the partners, states the 
   - part of the Bengaluru South detail.
   
   The speech is now about 1,330 words.
+
+## CCSR Guidelines Government Order (added from the Drive file, 3 November 2026)
+
+Source: GO No. EP 81 EGOV 2025 dated 18.06.2026, 20 pages, read in full. The annexure that follows it, a scanned list of the 1,000 schools, did not extract as text and is not used.
+
+**Added to the speech:**
+- More than ₹352 crore of CCSR contributions used in 2024-25.
+- Each KPS serves about 1,200 children from 8 to 15 villages; the aim is one KPS per gram panchayat.
+- 1,000 schools to become KPS through CCSR over the next two years.
+- The seven areas of support, each for at least three years, including a KPS corpus fund and certified skill education from Class 6 to Class 12.
+- What partners receive: co-branding, nomination to school management, employee volunteering and mentoring, and awards and certificates.
+- How the process works:
+  - selection on the portal;
+  - a District Cell MoU of three to five years, published the same day;
+  - donors deliver through their own implementing agency and pay no money to Government;
+  - a real-time dashboard;
+  - the Commissioner's CCSR Cell as single point of contact;
+  - quarterly review by the CM-chaired State committee, of which the Chief Secretary is a member;
+  - grievances settled within 30 working days.
+
+**Removed to keep within 10 minutes:**
+- the Magnet Schools sentence;
+- the facial-attendance paragraph, including the unclear DBT line, which resolves point 4 above;
+- the Bengaluru Rural laboratory finding and the 300-studies line;
+- the Spoken English sentence;
+- the national "35 paise" CSR figure.
+
+The speech is now about 1,350 words, roughly 10 minutes at 135 words a minute.
+
+**Please verify:**
+1. **Portal name.** The issued GO calls the portal "Namma Shale, Nanna Koduge" (NSNK). The draft mentorship order calls it "Nanna Shale Namma Javabdari" (NSNJ). The speech follows the issued GO: it names the portal "Namma Shale, Nanna Koduge", and the closing line is now ನಮ್ಮ ಶಾಲೆ, ನನ್ನ ಕೊಡುಗೆ ("our school, my contribution"). If the portal has been renamed, change both.
+2. **Timeline for the 1,000 schools.** The presentation calls this a 100-Day Programme commitment; the GO says "within the next two years". The speech now says the schools "have been identified under the 100-Day Programme to become KPS over the next two years". Please confirm this wording.
+3. **Chief Secretary's role.** The speech has her say she is a member of the State CCSR Monitoring Committee, as the GO lists. Confirm she is comfortable saying this.
