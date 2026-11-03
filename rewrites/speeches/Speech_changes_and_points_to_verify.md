@@ -28,4 +28,23 @@ The tone is measured, factual and courteous. It thanks the partners, states the 
 3. **Facial attendance and child marriage.** The draft said the system can help "prevent a child marriage". This claim is not in Annexure A, so the rewrite says only that it helps notice early when a child stops coming to school.
 4. **DBT.** The draft said teachers' payments go through DBT. The annexure lists only "DBT". The rewrite says "payments are made directly to bank accounts through DBT". Please confirm whose payments are meant.
 5. **Vidyarthi Rakshaka.** The draft said "one in every school". This is not in the annexure, so it has been left out.
-6. **CSR Guidelines name.** The draft used "CCSR Guidelines" and the annexure "Community and CSR Partnership Guidelines". The rewrite uses the full name; please confirm it is the official title.
+6. **CSR Guidelines name.** Resolved from the draft Government Order: Community and Corporate Social Responsibility (CCSR) Guidelines, GO No. EP 81 EGOV 2025 dated 18.06.2026.
+
+## School Mentorship Programme (added from the draft Government Order of 2 November 2026)
+
+- **Draft status.** The Government Order is still a draft: its number and date read "EP XX XXX 2026" and "XX.XX.2026". The speech therefore says the Department "is finalising guidelines". If the order is issued before 4 November, change this to "has issued guidelines".
+- **What the speech covers:**
+  - who may mentor, and the eligible Government schools with their priority areas;
+  - areas of support, including CET, NEET, CLAT and CUET coaching;
+  - the target of 1,000 schools in 2026-27;
+  - the safeguards: no fees, Government control, additional and police-verified teachers, no inducement to change schools, no advertising;
+  - the 15-working-day decision on proposals, and recognition on the name board and through annual State awards.
+- **The speaker's own role.** The speech refers to "the meeting held under my chairmanship on 31 October", following reference 3 of the draft order.
+- **Portal name.** The CCSR portal is "Nanna Shale Namma Javabdari" (ನನ್ನ ಶಾಲೆ ನಮ್ಮ ಜವಾಬ್ದಾರಿ), so the closing line now reads ನನ್ನ ಶಾಲೆ, ನಮ್ಮ ಜವಾಬ್ದಾರಿ.
+- **Trimmed to keep within 10 minutes:**
+  - the Pygmalion paragraph;
+  - the Ksheera Bhagya sentence;
+  - the Mobile Bidi, Pusthaka Hidi and Vidyarthi Rakshaka mentions;
+  - part of the Bengaluru South detail.
+  
+  The speech is now about 1,330 words.
