@@ -34,8 +34,9 @@ action research journal, classroom observation timer, stakeholder map, proposal 
 APA reference manager, quality checklist.
 
 **Also:** pre-assessment, progress tracking, badges, points and day streaks, bookmarks, notes, full-text search
-(English and Kannada), resource library with downloadable templates (bilingual consent form, observation
-schedule, proposal outline, policy brief, codebook), glossary of Karnataka terms, facilitator desk (cohort
+(English and Kannada), resource library with nine downloadable Word (.docx) templates with English and Kannada headings
+(parent consent form, child assent script, teacher interview guide, observation schedule, proposal outline,
+action research planner, codebook, policy brief, peer review checklist), glossary of Karnataka terms, facilitator desk (cohort
 table, chapter analytics, CSV export, feedback on submissions), printable certificate, text size, high-contrast
 mode, backup/restore, offline use (PWA).
 
@@ -55,6 +56,8 @@ A ready-built copy is committed as `Research_Methodology_Orientation_Book.html`.
   Statements about State evidence come from the background notes in this repository's `rewrites/` folder.
 - The Kannada text is a careful first translation; it should be reviewed by a DSERT language editor before
   wide release. Tool screens (calculators, forms) have bilingual titles but English working labels.
+- Downloads (templates, proposal and survey as .docx, CSV report, progress backup) use the viewer's
+  download prompt when the book is published on claude.ai, and a normal browser download elsewhere.
 - Data are stored only in each user's browser. The facilitator desk shows a sample cohort; connecting a shared
   database (e.g. Supabase or Firebase, as the master prompt suggests) is the next step for real multi-DIET use,
   along with login, messaging and mentorship features.

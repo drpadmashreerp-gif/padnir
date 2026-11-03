@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import type { ToolId } from '../data/modules';
 import { useStore } from '../lib/store';
 import * as st from '../lib/stats';
+import { saveFile, hosted } from '../lib/save';
+import { buildDocx, textToBlocks, Block } from '../lib/docx';
 
 export const TOOL_META: Record<ToolId, { name: string; kn: string; desc: string }> = {
   rq: { name: 'Research Question Builder', kn: 'ಸಂಶೋಧನಾ ಪ್ರಶ್ನೆ ರಚನಕಾರ', desc: 'Turn a concern into a focused question and hypothesis.' },
@@ -20,11 +22,6 @@ export const TOOL_META: Record<ToolId, { name: string; kn: string; desc: string 
 };
 
 const f = (n: number, d = 2) => (Number.isFinite(n) ? n.toFixed(d) : '—');
-const download = (name: string, text: string, type = 'text/plain') => {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([text], { type }));
-  a.download = name; a.click(); URL.revokeObjectURL(a.href);
-};
 const Field = ({ label, ...p }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) => (
   <label className="block"><span className="label">{label}</span><input className="input" {...p} /></label>
 );
@@ -211,7 +208,7 @@ function Survey() {
       </div>
       <div className="flex gap-2">
         <button className="btn-primary" disabled={!draft.text.trim()} onClick={() => { setQs([...qs, draft]); setDraft({ ...draft, text: '', options: '' }); }}>Add question</button>
-        <button className="btn-ghost" onClick={() => download('survey.txt', text)}>Export as text</button>
+        <button className="btn-ghost" onClick={() => saveFile('survey.docx', buildDocx([{ t: 'title', text: title }, ...qs.flatMap((q, i): Block[] => [{ t: 'p', text: `${i + 1}. ${q.text}` }, ...(opts(q).length ? opts(q).map((o): Block => ({ t: 'bullet', text: `☐ ${o}` })) : [{ t: 'blank' } as Block])])]))}>Download survey (.docx)</button>
       </div>
     </div>
   );
@@ -374,8 +371,8 @@ function Proposal() {
       <div className="flex flex-wrap gap-2 items-center">
         <button className="btn-ghost" disabled={step === 0} onClick={() => setStep(step - 1)}>← Back</button>
         <button className="btn-ghost" disabled={step === SECTIONS.length - 1} onClick={() => setStep(step + 1)}>Next section →</button>
-        <button className="btn-primary" onClick={() => download('research-proposal.doc', html, 'application/msword')}>Export to Word</button>
-        <button className="btn-ghost" onClick={() => { const w = window.open(''); if (w) { w.document.write(html); w.document.close(); w.print(); } }}>Print / PDF</button>
+        <button className="btn-primary" onClick={() => saveFile('research-proposal.docx', buildDocx(textToBlocks(s.proposal.title || 'Research Proposal', [['Researcher', [s.name, s.institution].filter(Boolean).join(', ')], ...SECTIONS.slice(1).map(([key, l]): [string, string] => [l, s.proposal[key] || ''])])))}>Export to Word (.docx)</button>
+        {!hosted && <button className="btn-ghost" onClick={() => { const w = window.open(''); if (w) { w.document.write(html); w.document.close(); w.print(); } }}>Print / PDF</button>}
         <span className="text-sm text-slate-500">{filled}/{SECTIONS.length} sections drafted</span>
       </div>
     </div>

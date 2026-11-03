@@ -2,6 +2,9 @@ import { Fragment, useState } from 'react';
 import { MODULES, PRE_ASSESSMENT, TOTAL_HOURS } from '../data/modules';
 import { KN, PRE_KN } from '../data/modules.kn';
 import { ModeSwitch } from '../lib/Bi';
+import { TEMPLATES, Template } from '../data/templates';
+import { buildDocx } from '../lib/docx';
+import { saveFile, outcomeText, hosted } from '../lib/save';
 import { useStore, streak } from '../lib/store';
 import { T } from '../i18n';
 import { pagesOf } from './Book';
@@ -170,73 +173,26 @@ const LINKS: [string, string, string][] = [
   ['JASP', 'https://jasp-stats.org', 'Free point-and-click statistics software.'],
   ['Zotero', 'https://www.zotero.org', 'Free reference manager.'],
 ];
-const TEMPLATES: [string, string][] = [
-  ['Parent consent form (English + Kannada)', `PARENT / GUARDIAN CONSENT FORM
-
-Study title: ______________________
-Researcher: ______________, DIET ______________
-
-Your child is invited to take part in a study about ______________. Your child will be asked to ______________ for about ____ minutes during school hours. Taking part is voluntary. You or your child may stop at any time. Your child's marks will not be affected. Your child's name and SATS number will not appear in any report.
-
-I agree that my child ______________ may take part.
-Parent / guardian signature or thumb impression: __________  Date: ________
-
-ಪೋಷಕರ ಒಪ್ಪಿಗೆ ಪತ್ರ
-ನಿಮ್ಮ ಮಗು ಈ ಅಧ್ಯಯನದಲ್ಲಿ ಭಾಗವಹಿಸುವುದು ಸ್ವಯಂಪ್ರೇರಿತ. ಯಾವಾಗ ಬೇಕಾದರೂ ಹಿಂದೆ ಸರಿಯಬಹುದು. ಮಗುವಿನ ಅಂಕಗಳ ಮೇಲೆ ಯಾವುದೇ ಪರಿಣಾಮ ಇರುವುದಿಲ್ಲ. ಮಗುವಿನ ಹೆಸರು ಮತ್ತು SATS ಸಂಖ್ಯೆ ಯಾವುದೇ ವರದಿಯಲ್ಲಿ ಪ್ರಕಟವಾಗುವುದಿಲ್ಲ.
-ಪೋಷಕರ ಸಹಿ / ಹೆಬ್ಬೆಟ್ಟು: __________  ದಿನಾಂಕ: ________
-
-(Kannada text to be checked by a language editor before use.)`],
-  ['Classroom observation schedule', `CLASSROOM OBSERVATION SCHEDULE
-School: ________  Block: ________  Grade: ___  Subject: ________  Date: ________
-Observer: ________  Lesson start/end: ____/____
-
-Record one category every 30 seconds:
-TT = Teacher talk  CT = Child talk  GW = Group work  IW = Individual work  S = Silence/transition  O = Off-task
-
-Min | 0:00 | 0:30 | 1:00 | 1:30 | ...
-----|------|------|------|------|----
-
-Field notes (description only):
-
-Reflections (interpretation, kept separate):`],
-  ['Research proposal outline', `RESEARCH PROPOSAL OUTLINE (DIET)
-1. Title
-2. Background and need
-3. Review of related literature and gap
-4. Objectives
-5. Research questions / hypotheses
-6. Design and method
-7. Population and sample
-8. Tools (with reliability and validity)
-9. Data analysis plan
-10. Ethical considerations
-11. Timeline
-12. Budget
-13. Expected outcomes and use
-14. References (APA 7)`],
-  ['Policy brief template', `POLICY BRIEF (max. 2 pages)
-To: ________  From: DIET ________  Date: ________
-The problem (3 lines):
-What we studied (who, where, how — 3 lines):
-Key findings (3 bullets with one number each):
-Recommended actions (3 bullets: who does what by when):
-Cost and feasibility:
-Contact:`],
-  ['Codebook template', `CODEBOOK
-Variable | Label | Values / codes | Missing code | Notes
-dist     | District | 1=Mysuru 2=Mandya ... | 99 |
-grade    | Grade | 1–10 | 99 |
-sex      | Sex of child | 1=Girl 2=Boy 3=Other | 9 |
-rd_pre   | Reading pre-test (words correct/min) | 0–150 | 999 |
-rd_post  | Reading post-test (words correct/min) | 0–150 | 999 |`],
-];
 export function Resources() {
-  const dl = (n: string, t: string) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([t], { type: 'text/plain;charset=utf-8' })); a.download = n.replace(/\W+/g, '-').toLowerCase() + '.txt'; a.click(); };
+  const [msg, setMsg] = useState<Record<string, string>>({});
+  const get = async (tp: Template) => {
+    setMsg((m) => ({ ...m, [tp.id]: 'Preparing… · ಸಿದ್ಧಪಡಿಸಲಾಗುತ್ತಿದೆ…' }));
+    const r = await saveFile(`${tp.name.replace(/\W+/g, '-')}.docx`, buildDocx(tp.blocks));
+    setMsg((m) => ({ ...m, [tp.id]: outcomeText[r] }));
+  };
   return (
     <div className="max-w-4xl mx-auto space-y-4">
       <h2 className="text-2xl font-bold text-teal-900">Resource library</h2>
-      <h3 className="font-semibold">Templates (download)</h3>
-      <div className="grid sm:grid-cols-2 gap-2">{TEMPLATES.map(([n, t]) => <button key={n} className="card text-left hover:border-teal-600" onClick={() => dl(n, t)}>⬇ {n}</button>)}</div>
+      <h3 className="font-semibold">Templates to download · ಡೌನ್‌ಲೋಡ್ ಮಾಡಬಹುದಾದ ನಮೂನೆಗಳು</h3>
+      <p className="text-sm text-slate-600">Word (.docx) files with English and Kannada headings. Open in Microsoft Word, LibreOffice or Google Docs, then fill in or adapt. · Word ಕಡತಗಳು; ತೆರೆದು ಭರ್ತಿ ಮಾಡಿ ಅಥವಾ ಬದಲಿಸಿ.</p>
+      <ul className="grid sm:grid-cols-2 gap-2">{TEMPLATES.map((tp) => (
+        <li key={tp.id} className="card flex flex-col gap-2">
+          <div><p className="font-semibold text-teal-900">{tp.name}</p><p lang="kn" className="text-sm text-teal-800">{tp.kn}</p><p className="text-sm text-slate-600">{tp.desc}</p></div>
+          <div className="flex flex-wrap items-center gap-2 mt-auto">
+            <button className="btn-primary" onClick={() => get(tp)} aria-describedby={`msg-${tp.id}`}>⬇ Download .docx</button>
+            <span id={`msg-${tp.id}`} role="status" className="text-xs text-slate-600">{msg[tp.id]}</span>
+          </div>
+        </li>))}</ul>
       <h3 className="font-semibold">Key sources and databases</h3>
       <ul className="grid sm:grid-cols-2 gap-2">{LINKS.map(([n, u, d]) => <li key={n} className="card"><a className="font-semibold text-teal-800 underline" href={u} target="_blank" rel="noreferrer">{n}</a><p className="text-sm text-slate-600">{d}</p></li>)}</ul>
       <h3 className="font-semibold">Glossary of Karnataka terms used in this book</h3>
@@ -270,7 +226,7 @@ export function Facilitator() {
             return <tr key={c.n} className="border-t"><td>{c.n}</td><td>{c.d}</td>{c.q.map((x, i) => <td key={i} className={`text-center ${x >= PASS ? 'text-emerald-700' : x > 0 ? 'text-amber-700' : 'text-slate-400'}`}>{x || '·'}</td>)}
               <td>{passed === 12 ? 'Complete' : passed < 4 ? <span className="text-rose-700 font-semibold">Needs support</span> : 'On track'}</td></tr>;
           })}</tbody></table>
-        <button className="btn-ghost mt-2" onClick={() => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'cohort-report.csv'; a.click(); }}>Export report (CSV)</button>
+        <button className="btn-ghost mt-2" onClick={() => saveFile('cohort-report.csv', csv, 'text/csv')}>Export report (CSV)</button>
       </div>
       <div className="card">
         <h3 className="font-semibold mb-2">Average quiz score by chapter</h3>
@@ -312,7 +268,8 @@ export function Certificate() {
         <p className="mt-4">has completed all twelve chapters and assessments.</p>
         <p className="mt-6 text-sm text-slate-500">Date: {new Date().toLocaleDateString('en-IN')}</p>
       </div>
-      {ok && <button className="btn-primary" onClick={() => window.print()}>Print / Save as PDF</button>}
+      {ok && !hosted && <button className="btn-primary" onClick={() => window.print()}>Print / Save as PDF</button>}
+      {ok && hosted && <p className="text-sm text-slate-600">To print, open the standalone HTML book in a browser and use Print. · ಮುದ್ರಿಸಲು ಸ್ವತಂತ್ರ HTML ಪುಸ್ತಕವನ್ನು ಬ್ರೌಸರ್‌ನಲ್ಲಿ ತೆರೆಯಿರಿ.</p>}
     </div>
   );
 }
@@ -330,7 +287,7 @@ export function Settings() {
       <label className="block"><span className="label">Text size: {s.fontSize}px</span><input type="range" min={14} max={22} value={s.fontSize} onChange={(e) => set({ fontSize: +e.target.value })} className="w-full" /></label>
       <label className="flex gap-2 items-center"><input type="checkbox" checked={s.highContrast} onChange={(e) => set({ highContrast: e.target.checked })} /> High-contrast mode</label>
       <div className="flex gap-2 border-t pt-3">
-        <button className="btn-ghost" onClick={() => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(s, null, 2)], { type: 'application/json' })); a.download = 'my-rmo-progress.json'; a.click(); }}>Back up my progress</button>
+        <button className="btn-ghost" onClick={() => saveFile('my-rmo-progress.json', JSON.stringify(s, null, 2), 'application/json')}>Back up my progress</button>
         <label className="btn-ghost cursor-pointer">Restore<input type="file" accept="application/json" className="hidden" onChange={async (e) => { const f = e.target.files?.[0]; if (f) try { set(JSON.parse(await f.text())); } catch { alert('Not a valid backup file.'); } }} /></label>
       </div>
       <p className="text-xs text-slate-500">All data stay in this browser. The app works offline after the first visit.</p>
