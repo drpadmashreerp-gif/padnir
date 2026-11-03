@@ -24,7 +24,7 @@ The tone is measured, factual and courteous. It thanks the partners, states the 
 ## Please verify before the speech is finalised
 
 1. **Salutation.** The draft names Shri D. K. Shivakumar as Hon'ble Chief Minister. Please confirm the order of dignitaries and their names. "Minister for IT and BT and Large and Medium Industries" was one title in the draft; these are usually two portfolios, so they now appear as two salutations, without names. Please add the names.
-2. **Personal statements.** "I studied psychology before I joined the service" and "I worked with Akanksha, the State's CSR platform" are about Dr. Shalini Rajneesh herself. Please have her office confirm both. Remove either if it is not accurate.
+2. **Personal statements.** "I studied psychology before I joined the service" and the reference to Akanksha have been removed, as requested. The Pygmalion finding is kept without the personal framing.
 3. **Facial attendance and child marriage.** The draft said the system can help "prevent a child marriage". This claim is not in Annexure A, so the rewrite says only that it helps notice early when a child stops coming to school.
 4. **DBT.** The draft said teachers' payments go through DBT. The annexure lists only "DBT". The rewrite says "payments are made directly to bank accounts through DBT". Please confirm whose payments are meant.
 5. **Vidyarthi Rakshaka.** The draft said "one in every school". This is not in the annexure, so it has been left out.
