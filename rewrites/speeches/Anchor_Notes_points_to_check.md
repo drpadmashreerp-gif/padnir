@@ -12,4 +12,4 @@ The rewrite keeps every organisation, school, district, count and MoU date as in
    If A17 and A18 are the same schools as B15 and B14, the grand total would be 89, not 91.
 3. **Part B heading.** It read "Earlier Partnerships", but eight Part B partners sign today: AMNS Ports Hazira, NMDC, CIE Automotive, Merck, ICT Service Management Solutions, Narayana Hrudayalaya, Mukunda Maharashtra and BEML. The heading now reads "Earlier partnerships, and Mandya district partners", and each of these entries is marked "MoU signed today".
 4. **Similar names.** Mukunda Swamy Steel Industry (A9), Mukund Sumi Steels Ltd (A11) and M/s Mukunda Maharashtra Company (B17) look alike. Please check the exact names before they are read aloud.
-5. **District names.** "Chikkaballapur" (B10) and "Chikkaballapura" (elsewhere) appear as in the original; please confirm the spelling to use.
+5. **District names.** Resolved: "Chikkaballapur" is now used throughout.
