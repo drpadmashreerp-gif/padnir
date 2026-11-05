@@ -4,6 +4,25 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, Re
 import { createClient, SupabaseClient, Session } from '@supabase/supabase-js';
 import { useStore, State, Role, initial } from './store';
 import { mergeStates } from './merge';
+import { contentBundled } from '../data/modules';
+import { loadBookContent, BookContent } from '../data/loadContent';
+
+const BOOK_CACHE = 'rmo-book-v1';
+/** Loads the chapters for the private build: from the database, or this device's copy when offline. */
+async function fetchBook(): Promise<string | null> {
+  if (contentBundled) return null;
+  const { data, error } = await supabase!.from('book_content').select('data').eq('id', 'book').maybeSingle();
+  if (!error && data?.data) {
+    loadBookContent(data.data as BookContent);
+    try { localStorage.setItem(BOOK_CACHE, JSON.stringify(data.data)); } catch { /* storage full or blocked */ }
+    return null;
+  }
+  try {
+    const cached = localStorage.getItem(BOOK_CACHE);
+    if (cached) { loadBookContent(JSON.parse(cached)); return null; }
+  } catch { /* fall through */ }
+  return error ? 'The book could not be loaded. Check your internet connection and reload.' : 'The book content has not been installed yet. The administrator needs to run supabase/content.sql in Supabase.';
+}
 
 const URL_ = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const KEY_ = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
@@ -24,6 +43,9 @@ type Ctx = {
   /** null while checking; false when signed in but not (or no longer) on the allowed list. */
   member: boolean | null;
   authReady: boolean;
+  /** Private build: true once the chapters are loaded; a message if they could not be. */
+  bookReady: boolean;
+  bookError: string;
 };
 const C = createContext<Ctx>(null!);
 export const useCloud = () => useContext(C);
@@ -38,6 +60,8 @@ export function CloudProvider({ children }: { children: ReactNode }) {
   const [sync, setSync] = useState<SyncState>(cloudEnabled ? 'loading' : 'off');
   const [member, setMember] = useState<boolean | null>(null);
   const [authReady, setAuthReady] = useState(!cloudEnabled);
+  const [bookReady, setBookReady] = useState(contentBundled);
+  const [bookError, setBookError] = useState('');
   const ready = useRef(false);          // true once the online copy has been merged in
   const timer = useRef<number>();
   const latest = useRef(s); latest.current = s;
@@ -82,6 +106,12 @@ export function CloudProvider({ children }: { children: ReactNode }) {
       if (cancelled) return;
       if (aErr || allowed !== true) { setMember(false); setSync('signed-out'); return; }
       setMember(true);
+      if (!contentBundled) {
+        const err = await fetchBook();
+        if (cancelled) return;
+        setBookError(err ?? ''); setBookReady(!err);
+        if (err) return;
+      }
       const uid = session.user.id;
       const [{ data: prof }, { data: prog }] = await Promise.all([
         supabase.from('profiles').select('id,name,institution,designation,role').eq('id', uid).maybeSingle(),
@@ -133,13 +163,14 @@ export function CloudProvider({ children }: { children: ReactNode }) {
     clearTimeout(timer.current);
     if (ready.current) await pushProgress(latest.current);
     await supabase?.auth.signOut();
+    try { localStorage.removeItem(BOOK_CACHE); } catch { /* ignore */ }
     const keep = latest.current;
     replace({ ...initial, readMode: keep.readMode, fontSize: keep.fontSize, highContrast: keep.highContrast }); // leave nothing personal on a shared computer
   };
 
   const isStaff = profile?.role === 'facilitator' || profile?.role === 'admin';
   return (
-    <C.Provider value={{ session, profile, sync, isStaff, isAdmin: profile?.role === 'admin', saveProfile, saveSubmission, refreshFeedback, signOut, member, authReady }}>
+    <C.Provider value={{ session, profile, sync, isStaff, isAdmin: profile?.role === 'admin', saveProfile, saveSubmission, refreshFeedback, signOut, member, authReady, bookReady, bookError }}>
       {children}
     </C.Provider>
   );

@@ -1,6 +1,6 @@
 // ಕನ್ನಡ ಆವೃತ್ತಿ — Part II (Chapters 13–17). Mirrors src/data/advanced.ts item for item.
 // Technical terms are kept in English in brackets. To be reviewed by a DSERT language editor.
-import type { KnModule } from './modules.kn';
+import type { KnModule } from '../modules.kn';
 
 export const ADVANCED_KN: Record<string, KnModule> = {
   m13: {

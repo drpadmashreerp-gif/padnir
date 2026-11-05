@@ -8,6 +8,8 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  # Keep the book text out of the website code; chapters load from the database after sign-in.
+  VITE_PRIVATE_CONTENT = "true"
 
 # Basic security headers. The book uses hash links (#/book/…), so no redirect rules are needed.
 [[headers]]

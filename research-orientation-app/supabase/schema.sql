@@ -47,6 +47,14 @@ create table if not exists public.announcements (
   created_at timestamptz not null default now()
 );
 
+-- The book's chapters, readable only by signed-in people on the allowed list.
+-- Filled by running supabase/content.sql after this file.
+create table if not exists public.book_content (
+  id text primary key,
+  data jsonb not null,
+  updated_at timestamptz not null default now()
+);
+
 -- People the administrator has allowed to use the book (invite-only).
 create table if not exists public.allowed_users (
   email text primary key check (email = lower(email) and position('@' in email) > 1),
@@ -133,6 +141,9 @@ alter table public.submissions enable row level security;
 alter table public.posts enable row level security;
 alter table public.announcements enable row level security;
 alter table public.allowed_users enable row level security;
+alter table public.book_content enable row level security;
+drop policy if exists "book read" on public.book_content;
+create policy "book read" on public.book_content for select to authenticated using (public.is_member());
 
 drop policy if exists "allowed read" on public.allowed_users;
 create policy "allowed read" on public.allowed_users for select to authenticated using (public.is_admin());

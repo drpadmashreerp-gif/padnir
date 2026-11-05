@@ -1,5 +1,5 @@
 import { Fragment, useState } from 'react';
-import { MODULES, PRE_ASSESSMENT, TOTAL_HOURS, PARTS, PART_MODULES, PART_HOURS, partOf } from '../data/modules';
+import { MODULES, PRE_ASSESSMENT, totalHours, PARTS, PART_MODULES, PART_HOURS, partOf } from '../data/modules';
 import { KN, PRE_KN } from '../data/modules.kn';
 import { ModeSwitch } from '../lib/Bi';
 import { TEMPLATES, Template } from '../data/templates';
@@ -20,7 +20,7 @@ export function moduleProgress(s: ReturnType<typeof useStore>['s'], id: string) 
   return Math.round(((s.pagesRead[id]?.length ?? 0) / pagesOf(m).length) * 100);
 }
 export function overall(s: ReturnType<typeof useStore>['s']) {
-  return Math.round(MODULES.reduce((a, m) => a + (moduleProgress(s, m.id) / 100) * m.hours, 0) / TOTAL_HOURS * 100);
+  return Math.round(MODULES.reduce((a, m) => a + (moduleProgress(s, m.id) / 100) * m.hours, 0) / totalHours() * 100);
 }
 const Bar = ({ v, label }: { v: number; label: string }) => (
   <div role="progressbar" aria-valuenow={v} aria-valuemin={0} aria-valuemax={100} aria-label={label} className="h-2 bg-slate-200 rounded">
@@ -43,7 +43,7 @@ export function Home() {
         <h1 className="text-3xl md:text-4xl font-bold mt-2">{T.en.appTitle}</h1>
         <p lang="kn" className="text-2xl md:text-3xl font-semibold mt-1">{T.kn.appTitle}</p>
         <p className="mt-2 opacity-90">{T.en.subtitle}</p><p lang="kn" className="opacity-90">{T.kn.subtitle}</p>
-        <p className="mt-3 text-sm opacity-90">{MODULES.length} chapters in two parts · {TOTAL_HOURS} hours · worked examples from DSERT, DIETs, SATS, LBA, Sethubandha, Nali Kali, KPS and SDMCs</p>
+        <p className="mt-3 text-sm opacity-90">{MODULES.length} chapters in two parts · {totalHours()} hours · worked examples from DSERT, DIETs, SATS, LBA, Sethubandha, Nali Kali, KPS and SDMCs</p>
         <div className="mt-5 flex flex-wrap gap-2">
           <a className="btn bg-white text-teal-900" href={s.lastPage || '#/book/m1/0'}>{s.lastPage ? `${T.en.continue} · ${T.kn.continue}` : `${T.en.start} · ${T.kn.start}`} →</a>
           {s.quiz.pre === undefined && <a className="btn bg-teal-900/40 text-white" href="#/pre">{T.en.pre} · {T.kn.pre}</a>}

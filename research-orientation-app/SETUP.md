@@ -27,7 +27,11 @@ chapter has a discussion board.
    **Before running:** scroll to the last lines and replace `your.email@example.com` with **your own email
    in lower case**. This makes you the first administrator. Then click **Run**. You should see
    *Success. No rows returned*. (It is safe to run again later.)
-4. Open **Project Settings → API** (or **Connect** at the top). Copy two values into a note:
+4. Still in the SQL Editor, click **New query** again. Open `research-orientation-app/supabase/content.sql`
+   on GitHub (click **Raw**, then select all and copy), paste it and click **Run**. This installs the book's
+   chapters inside the protected database, where only signed-in people on your list can read them.
+   Whenever the chapters are updated later, run this file again.
+5. Open **Project Settings → API** (or **Connect** at the top). Copy two values into a note:
    - **Project URL** — looks like `https://abcdefgh.supabase.co`
    - **anon / public key** — a long text starting `eyJ…` (this key is meant to be public; the database rules
      in step 3 protect the data). **Do not copy the `service_role` key.**
@@ -130,11 +134,11 @@ Settings → Secrets and variables → Actions → **Variables**.
 - **Backups:** Supabase → Database → Backups, or Table Editor → Export to CSV.
 - **Privacy:** data stays in your Supabase project. Participants see only their own work; discussion posts
   and announcements are visible to everyone signed in.
-- **What the login protects:** using the app, everyone's saved work, activity responses, discussions,
-  announcements and the cohort data. With the repository private, the source and its history are hidden too.
-  The published website still sends the book to the browser after it loads, so a technically skilled
-  visitor to the Netlify address could read the chapter text in the page code without signing in;
-  share the address only with the people you invite.
+- **What is private:** the online website contains no chapter text at all. The chapters are stored in the
+  protected database and are sent only to signed-in people on your list, together with their saved work,
+  responses, discussions, announcements and cohort data. With the repository private, the source code and
+  its history are hidden as well. A participant's device keeps a copy of the chapters for offline reading
+  until they sign out.
 - **Netlify free plan:** 100 GB of traffic and 300 build minutes a month — plenty for training batches.
 - **The claude.ai copy** is private to you unless you share it, and has no login. A standalone HTML copy
   (`npm run build:single`) also has no login, so share it only with people you trust; it is not kept in this repository.

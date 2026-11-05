@@ -2,7 +2,7 @@
 // Structured around five themes: proposal and AI assistance; measurement and data preparation;
 // EFA and CFA; structural equation modelling; academic writing, publication and AI-enabled research.
 // Datasets and numbers in examples are ILLUSTRATIVE unless a source is named.
-import type { Module } from './modules';
+import type { Module } from '../modules';
 
 export const ADVANCED: Module[] = [
   {

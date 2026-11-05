@@ -1,5 +1,5 @@
 // Word exports: chapters, the whole book, certificate and personal portfolio.
-import { MODULES, Module, TOTAL_HOURS, PARTS, PART_MODULES, PART_HOURS, partOf } from '../data/modules';
+import { MODULES, Module, totalHours, PARTS, PART_MODULES, PART_HOURS, partOf } from '../data/modules';
 import { KN } from '../data/modules.kn';
 import type { State } from './store';
 import type { Block } from './docx';
@@ -40,7 +40,7 @@ export function chapterBlocks(m: Module, mode: Mode): Block[] {
 export function bookBlocks(mode: Mode): Block[] {
   return [
     { t: 'big', text: 'Research Methodology Orientation' }, { t: 'big', text: 'ಸಂಶೋಧನಾ ವಿಧಾನ ದೃಷ್ಟಿಕೋನ ತರಬೇತಿ' },
-    { t: 'center', text: `For DIET faculty · ಡಯಟ್ ಉಪನ್ಯಾಸಕರಿಗಾಗಿ\n${MODULES.length} chapters in two parts · ${TOTAL_HOURS} hours\nExamples from Karnataka school education · ಕರ್ನಾಟಕದ ಶಾಲಾ ಶಿಕ್ಷಣದ ಉದಾಹರಣೆಗಳು` },
+    { t: 'center', text: `For DIET faculty · ಡಯಟ್ ಉಪನ್ಯಾಸಕರಿಗಾಗಿ\n${MODULES.length} chapters in two parts · ${totalHours()} hours\nExamples from Karnataka school education · ಕರ್ನಾಟಕದ ಶಾಲಾ ಶಿಕ್ಷಣದ ಉದಾಹರಣೆಗಳು` },
     { t: 'h1', text: 'Contents · ಪರಿವಿಡಿ' },
     { t: 'table', widths: [900, 4300, 2800, 1000], rows: [['Ch', 'Title', 'ಶೀರ್ಷಿಕೆ', 'Hours'], ...MODULES.map((m) => [String(m.no), m.title, m.titleKn, String(m.hours)])] },
     ...MODULES.flatMap((m, i): Block[] => [{ t: 'pagebreak' },

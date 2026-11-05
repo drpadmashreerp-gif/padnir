@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "build:single": "npm run build && node scripts-inline.mjs"
+    "build:single": "npm run build && node scripts-inline.mjs",
+    "export:content": "vite-node scripts/export-content.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",

@@ -105,7 +105,7 @@ export function Login() {
 
 /** Shows the app only to signed-in people who are on the allowed list (online version). */
 export function Gate({ children }: { children: ReactNode }) {
-  const { session, member, authReady, signOut } = useCloud();
+  const { session, member, authReady, signOut, bookReady, bookError } = useCloud();
   if (!cloudEnabled) return <>{children}</>;
   if (!authReady) return <Shell><p role="status">Loading… · ಲೋಡ್ ಆಗುತ್ತಿದೆ…</p></Shell>;
   if (!session) return <Login />;
@@ -118,5 +118,8 @@ export function Gate({ children }: { children: ReactNode }) {
       <button className="btn-primary" onClick={signOut}>Sign out · ಸೈನ್ ಔಟ್</button>
     </Shell>
   );
+  if (bookError) return <Shell><h2 className="text-lg font-bold">The book could not be opened</h2><p role="alert" className="text-sm">{bookError}</p>
+    <div className="flex gap-2"><button className="btn-primary" onClick={() => location.reload()}>Try again</button><button className="btn-ghost" onClick={signOut}>Sign out</button></div></Shell>;
+  if (!bookReady) return <Shell><p role="status">Opening the book… · ಪುಸ್ತಕ ತೆರೆಯಲಾಗುತ್ತಿದೆ…</p></Shell>;
   return <>{children}</>;
 }
