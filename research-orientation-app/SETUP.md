@@ -109,7 +109,7 @@ their code. Sending through your Gmail fixes this (up to about 500 emails a day)
   repository is public, so a technically skilled person could still read the chapter text without signing in.
   To keep the text private as well, make the repository private and host it on a service that supports
   private repositories (GitHub Pages needs a paid plan for that).
-- **The claude.ai copy** is private to you unless you share it, and has no login. The standalone HTML file in
-  this repository has no login either; anyone who downloads it can read the book offline.
+- **The claude.ai copy** is private to you unless you share it, and has no login. A standalone HTML copy
+  (`npm run build:single`) also has no login, so share it only with people you trust; it is not kept in this repository.
 - **Link check:** the workflow *Check book links* tests every link in the Resource library each Monday and
   shows a red cross in the Actions tab if one breaks.

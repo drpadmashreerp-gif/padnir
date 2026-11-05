@@ -80,7 +80,8 @@ npm test             # statistics and content-parity tests
 npm run build        # PWA build in dist/
 npm run build:single # one self-contained HTML file: dist/single/research-orientation.html
 ```
-A ready-built copy is committed as `Research_Methodology_Orientation_Book.html`. The single HTML file can be shared by email or pen drive and opened in any browser without internet
+The standalone file is not kept in this public repository, so that only invited people can read the book; build it
+with `npm run build:single` when needed. It can be shared by email or pen drive and opened in any browser without internet
 (fonts fall back to system fonts offline).
 
 ## Notes for the Department
