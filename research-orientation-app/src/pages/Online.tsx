@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { supabase, cloudEnabled, useCloud, syncLabel, Profile } from '../lib/cloud';
 import { useStore, Role } from '../lib/store';
-import { MODULES } from '../data/modules';
+import { MODULES, PART_MODULES } from '../data/modules';
 import { saveFile } from '../lib/save';
 
 const fmt = (d: string) => new Date(d).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
@@ -187,8 +187,8 @@ export function FacilitatorLive() {
 
   return (
     <div className="space-y-4">
-      <div className="grid sm:grid-cols-4 gap-3">
-        {[['Participants', participants.length], ['Completed all 12', participants.filter((r) => passed(r) === 12).length], ['Need support (<4 passed)', participants.filter((r) => passed(r) < 4).length], ['Responses awaiting feedback', subs.filter((x) => !x.feedback).length]].map(([k, v]) => (
+      <div className="grid sm:grid-cols-5 gap-3">
+        {[['Participants', participants.length], ['Completed Part I', participants.filter((r) => PART_MODULES(1).every((m) => (r.quiz[m.id] ?? 0) >= 60)).length], ['Completed Part II', participants.filter((r) => PART_MODULES(2).every((m) => (r.quiz[m.id] ?? 0) >= 60)).length], ['Need support (<4 passed)', participants.filter((r) => passed(r) < 4).length], ['Responses awaiting feedback', subs.filter((x) => !x.feedback).length]].map(([k, v]) => (
           <div key={k as string} className="card"><p className="text-xs text-slate-500">{k}</p><p className="text-2xl font-bold text-teal-900">{v}</p></div>))}
       </div>
       <div className="card overflow-x-auto">
@@ -198,7 +198,7 @@ export function FacilitatorLive() {
           <tbody>{rows.map((r) => (
             <tr key={r.id} className="border-t"><td>{r.name || <em className="text-slate-400">no name yet</em>}</td><td>{r.institution}</td>
               {MODULES.map((m) => { const x = r.quiz[m.id]; return <td key={m.id} className={`text-center ${x === undefined ? 'text-slate-400' : x >= 60 ? 'text-emerald-700' : 'text-amber-700'}`}>{x ?? '·'}</td>; })}
-              <td>{passed(r) === 12 ? 'Complete' : passed(r) < 4 ? <span className="text-rose-700 font-semibold">Needs support</span> : 'On track'}</td>
+              <td>{passed(r) === MODULES.length ? 'Complete' : passed(r) < 4 ? <span className="text-rose-700 font-semibold">Needs support</span> : 'On track'}</td>
               {isAdmin && <td><select aria-label={`Role for ${r.name}`} className="input py-1" value={r.role} onChange={async (e) => {
                 const { error } = await supabase!.from('profiles').update({ role: e.target.value as Role }).eq('id', r.id);
                 if (error) alert(error.message); load();

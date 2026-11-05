@@ -1,5 +1,5 @@
 // Word exports: chapters, the whole book, certificate and personal portfolio.
-import { MODULES, Module, TOTAL_HOURS } from '../data/modules';
+import { MODULES, Module, TOTAL_HOURS, PARTS, PART_MODULES, PART_HOURS, partOf } from '../data/modules';
 import { KN } from '../data/modules.kn';
 import type { State } from './store';
 import type { Block } from './docx';
@@ -19,6 +19,7 @@ export function chapterBlocks(m: Module, mode: Mode): Block[] {
   m.lessons.forEach((l, i) => {
     out.push(...bi(mode, l.title, k.lessons[i].title, 'h1'));
     l.body.forEach((b, j) => out.push(...bi(mode, b, k.lessons[i].body[j])));
+    l.code?.forEach((c) => out.push({ t: 'note', text: `${c.label} (${c.lang})` }, { t: 'code', text: c.src }));
   });
   out.push(...bi(mode, 'From Karnataka classrooms', 'ಕರ್ನಾಟಕದ ತರಗತಿಗಳಿಂದ', 'h1'));
   m.karnataka.forEach((ex, i) => {
@@ -39,24 +40,27 @@ export function chapterBlocks(m: Module, mode: Mode): Block[] {
 export function bookBlocks(mode: Mode): Block[] {
   return [
     { t: 'big', text: 'Research Methodology Orientation' }, { t: 'big', text: 'ಸಂಶೋಧನಾ ವಿಧಾನ ದೃಷ್ಟಿಕೋನ ತರಬೇತಿ' },
-    { t: 'center', text: `For DIET faculty · ಡಯಟ್ ಉಪನ್ಯಾಸಕರಿಗಾಗಿ\n${MODULES.length} chapters · ${TOTAL_HOURS} hours\nExamples from Karnataka school education · ಕರ್ನಾಟಕದ ಶಾಲಾ ಶಿಕ್ಷಣದ ಉದಾಹರಣೆಗಳು` },
+    { t: 'center', text: `For DIET faculty · ಡಯಟ್ ಉಪನ್ಯಾಸಕರಿಗಾಗಿ\n${MODULES.length} chapters in two parts · ${TOTAL_HOURS} hours\nExamples from Karnataka school education · ಕರ್ನಾಟಕದ ಶಾಲಾ ಶಿಕ್ಷಣದ ಉದಾಹರಣೆಗಳು` },
     { t: 'h1', text: 'Contents · ಪರಿವಿಡಿ' },
     { t: 'table', widths: [900, 4300, 2800, 1000], rows: [['Ch', 'Title', 'ಶೀರ್ಷಿಕೆ', 'Hours'], ...MODULES.map((m) => [String(m.no), m.title, m.titleKn, String(m.hours)])] },
-    ...MODULES.flatMap((m): Block[] => [{ t: 'pagebreak' }, ...chapterBlocks(m, mode)]),
+    ...MODULES.flatMap((m, i): Block[] => [{ t: 'pagebreak' },
+      ...(i === 0 || partOf(MODULES[i - 1]) !== partOf(m) ? [{ t: 'big', text: `${PARTS[partOf(m)].en}\n${PARTS[partOf(m)].kn}` } as Block, { t: 'pagebreak' } as Block] : []),
+      ...chapterBlocks(m, mode)]),
   ];
 }
 
-export function certificateBlocks(name: string, institution: string, date: string): Block[] {
+export function certificateBlocks(name: string, institution: string, date: string, part: 1 | 2 = 1): Block[] {
+  const n = PART_MODULES(part).length;
   return [
     { t: 'blank', lines: 3 },
     { t: 'center', text: 'CERTIFICATE OF COMPLETION · ಪೂರ್ಣಗೊಳಿಸಿದ ಪ್ರಮಾಣಪತ್ರ' },
-    { t: 'big', text: 'Research Methodology Orientation' },
-    { t: 'center', text: `${TOTAL_HOURS}-hour programme for DIET faculty, Karnataka\nಡಯಟ್ ಉಪನ್ಯಾಸಕರಿಗಾಗಿ ${TOTAL_HOURS} ಗಂಟೆಗಳ ತರಬೇತಿ` },
+    { t: 'big', text: part === 1 ? 'Research Methodology Orientation' : 'Advanced Research Methods: Analytics, Innovation and AI' },
+    { t: 'center', text: `${PART_HOURS(part)}-hour programme for DIET faculty, Karnataka\nಡಯಟ್ ಉಪನ್ಯಾಸಕರಿಗಾಗಿ ${PART_HOURS(part)} ಗಂಟೆಗಳ ತರಬೇತಿ` },
     { t: 'blank', lines: 2 },
     { t: 'center', text: 'This is to certify that · ಇವರು' },
     { t: 'big', text: name || '______________________' },
     { t: 'center', text: institution || '______________________' },
-    { t: 'center', text: 'has completed all twelve chapters and assessments.\nಎಲ್ಲಾ ಹನ್ನೆರಡು ಅಧ್ಯಾಯಗಳು ಮತ್ತು ಮೌಲ್ಯಮಾಪನಗಳನ್ನು ಪೂರ್ಣಗೊಳಿಸಿದ್ದಾರೆ ಎಂದು ಪ್ರಮಾಣೀಕರಿಸಲಾಗಿದೆ.' },
+    { t: 'center', text: `has completed all ${n} chapters and assessments of ${part === 1 ? 'Part I' : 'Part II'}.\n${part === 1 ? 'ಭಾಗ ೧' : 'ಭಾಗ ೨'}ರ ಎಲ್ಲಾ ${n} ಅಧ್ಯಾಯಗಳು ಮತ್ತು ಮೌಲ್ಯಮಾಪನಗಳನ್ನು ಪೂರ್ಣಗೊಳಿಸಿದ್ದಾರೆ ಎಂದು ಪ್ರಮಾಣೀಕರಿಸಲಾಗಿದೆ.` },
     { t: 'blank', lines: 3 },
     { t: 'table', header: false, widths: [4500, 4500], rows: [[`Date · ದಿನಾಂಕ: ${date}`, 'Signature · ಸಹಿ: ____________________']] },
   ];

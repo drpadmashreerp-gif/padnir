@@ -1,5 +1,5 @@
 import { Fragment, useState } from 'react';
-import { MODULES, PRE_ASSESSMENT, TOTAL_HOURS } from '../data/modules';
+import { MODULES, PRE_ASSESSMENT, TOTAL_HOURS, PARTS, PART_MODULES, PART_HOURS, partOf } from '../data/modules';
 import { KN, PRE_KN } from '../data/modules.kn';
 import { ModeSwitch } from '../lib/Bi';
 import { TEMPLATES, Template } from '../data/templates';
@@ -43,7 +43,7 @@ export function Home() {
         <h1 className="text-3xl md:text-4xl font-bold mt-2">{T.en.appTitle}</h1>
         <p lang="kn" className="text-2xl md:text-3xl font-semibold mt-1">{T.kn.appTitle}</p>
         <p className="mt-2 opacity-90">{T.en.subtitle}</p><p lang="kn" className="opacity-90">{T.kn.subtitle}</p>
-        <p className="mt-3 text-sm opacity-90">12 chapters · {TOTAL_HOURS} hours · worked examples from DSERT, DIETs, SATS, LBA, Sethubandha, Nali Kali, KPS and SDMCs</p>
+        <p className="mt-3 text-sm opacity-90">{MODULES.length} chapters in two parts · {TOTAL_HOURS} hours · worked examples from DSERT, DIETs, SATS, LBA, Sethubandha, Nali Kali, KPS and SDMCs</p>
         <div className="mt-5 flex flex-wrap gap-2">
           <a className="btn bg-white text-teal-900" href={s.lastPage || '#/book/m1/0'}>{s.lastPage ? `${T.en.continue} · ${T.kn.continue}` : `${T.en.start} · ${T.kn.start}`} →</a>
           {s.quiz.pre === undefined && <a className="btn bg-teal-900/40 text-white" href="#/pre">{T.en.pre} · {T.kn.pre}</a>}
@@ -66,7 +66,7 @@ export function Home() {
       )}
 
       <section className="grid sm:grid-cols-4 gap-3">
-        {[['Course complete', pct + '%'], ['Chapters passed', `${MODULES.filter((m) => (s.quiz[m.id] ?? 0) >= PASS).length}/12`], ['Day streak', `${streak(s.activeDays)} 🔥`], ['Points', String(points(s))]].map(([k, v]) => (
+        {[['Course complete', pct + '%'], ['Chapters passed', `${MODULES.filter((m) => (s.quiz[m.id] ?? 0) >= PASS).length}/${MODULES.length}`], ['Day streak', `${streak(s.activeDays)} 🔥`], ['Points', String(points(s))]].map(([k, v]) => (
           <div key={k} className="card"><p className="text-xs text-slate-500">{k}</p><p className="text-2xl font-bold text-teal-900">{v}</p></div>))}
       </section>
 
@@ -91,8 +91,11 @@ export function Contents() {
         <h2 className="text-xl font-bold text-teal-900">Contents · <span lang="kn">ಪರಿವಿಡಿ</span></h2>
         <DownloadButton label="Download the whole book (.docx) · ಪೂರ್ಣ ಪುಸ್ತಕ" filename="Research-Methodology-Orientation-Book.docx" make={() => bookBlocks(s.readMode)} />
       </div>
+      {([1, 2] as const).map((part) => (<div key={part} className="mb-5">
+      <h3 className="font-bold text-teal-900 mt-2">{PARTS[part].en} · {PART_HOURS(part)} h</h3>
+      <p lang="kn" className="text-sm text-teal-800 mb-2">{PARTS[part].kn}</p>
       <ol className="grid md:grid-cols-2 gap-3">
-        {MODULES.map((m) => {
+        {PART_MODULES(part).map((m) => {
           const pr = moduleProgress(s, m.id);
           return (
             <li key={m.id}><a href={`#/book/${m.id}/0`} className="card block hover:border-teal-600">
@@ -103,7 +106,7 @@ export function Contents() {
               <p className="text-xs mt-1 text-slate-500">{pr}% read{s.quiz[m.id] !== undefined && ` · quiz ${s.quiz[m.id]}%`}{(s.quiz[m.id] ?? 0) >= 75 && ' 🏅'}</p>
             </a></li>);
         })}
-      </ol>
+      </ol></div>))}
     </section>
   );
 }
@@ -224,12 +227,13 @@ export function Resources() {
 }
 
 /* ---------- Facilitator desk ---------- */
-const COHORT = [
+const COHORT_RAW = [
   { n: 'Participant 01', d: 'DIET Kalaburagi', q: [80, 75, 100, 50, 75, 100, 75, 0, 0, 0, 0, 0] },
   { n: 'Participant 02', d: 'DIET Mysuru', q: [100, 100, 75, 75, 100, 75, 100, 100, 75, 50, 0, 0] },
   { n: 'Participant 03', d: 'DIET Dharwad', q: [60, 50, 50, 25, 0, 0, 0, 0, 0, 0, 0, 0] },
-  { n: 'Participant 04', d: 'DIET Udupi', q: [100, 75, 100, 100, 75, 100, 100, 75, 100, 75, 75, 100] },
+  { n: 'Participant 04', d: 'DIET Udupi', q: [100, 75, 100, 100, 75, 100, 100, 75, 100, 75, 75, 100, 75, 100, 50, 0, 0] },
 ];
+const COHORT = COHORT_RAW.map((c) => ({ ...c, q: MODULES.map((_, i) => c.q[i] ?? 0) }));
 export function Facilitator() {
   const cloud = useCloud();
   if (cloudEnabled) return (
@@ -282,28 +286,37 @@ function FacilitatorSample() {
 /* ---------- Certificate ---------- */
 export function Certificate() {
   const { s } = useStore();
-  const passed = MODULES.filter((m) => (s.quiz[m.id] ?? 0) >= PASS).length;
-  const ok = passed === 12;
   return (
-    <div className="max-w-3xl mx-auto space-y-3">
-      {!ok && <p className="card">Pass all 12 chapter quizzes ({PASS}% or more) to unlock your certificate. Passed so far: <strong>{passed}/12</strong>.</p>}
-      <div className={`card text-center border-4 border-double border-teal-800 p-10 relative ${ok ? '' : 'opacity-50'}`} id="cert">
+    <div className="max-w-3xl mx-auto space-y-6">
+      <p className="text-sm text-slate-600">Each part has its own certificate. Pass every chapter quiz in a part ({PASS}% or more) to unlock it. · ಪ್ರತಿ ಭಾಗಕ್ಕೆ ಪ್ರತ್ಯೇಕ ಪ್ರಮಾಣಪತ್ರ.</p>
+      {([1, 2] as const).map((part) => <CertCard key={part} part={part} s={s} />)}
+      {!s.name && <p className="text-sm text-amber-800">Add your name in {cloudEnabled ? 'My account' : 'Settings'} first, so it appears on the certificate.</p>}
+    </div>
+  );
+}
+function CertCard({ part, s }: { part: 1 | 2; s: ReturnType<typeof useStore>['s'] }) {
+  const mods = PART_MODULES(part); const passed = mods.filter((m) => (s.quiz[m.id] ?? 0) >= PASS).length; const ok = passed === mods.length;
+  const title = part === 1 ? 'Research Methodology Orientation' : 'Advanced Research Methods: Analytics, Innovation and AI';
+  return (
+    <section className="space-y-2">
+      <h2 className="font-bold text-teal-900">{PARTS[part].en} <span lang="kn" className="block text-sm font-normal text-teal-800">{PARTS[part].kn}</span></h2>
+      {!ok && <p className="text-sm">Passed so far: <strong>{passed}/{mods.length}</strong> (Chapters {mods[0].no}–{mods[mods.length - 1].no}).</p>}
+      <div className={`card text-center border-4 border-double border-teal-800 p-8 relative ${ok ? '' : 'opacity-50'}`}>
         {!ok && <span className="absolute inset-0 flex items-center justify-center text-5xl font-bold text-slate-300 -rotate-12 pointer-events-none">PREVIEW</span>}
         <p className="uppercase tracking-widest text-xs text-slate-500">Certificate of Completion</p>
-        <h2 className="text-2xl font-bold text-teal-900 mt-2">Research Methodology Orientation</h2>
-        <p className="text-sm text-slate-600">{TOTAL_HOURS}-hour programme for DIET faculty, Karnataka</p>
-        <p className="mt-6">This is to certify that</p>
+        <h3 className="text-2xl font-bold text-teal-900 mt-2">{title}</h3>
+        <p className="text-sm text-slate-600">{PART_HOURS(part)}-hour programme for DIET faculty, Karnataka</p>
+        <p className="mt-5">This is to certify that</p>
         <p className="text-3xl font-semibold my-2">{s.name || '________________'}</p>
         <p>{s.institution || '________________'}</p>
-        <p className="mt-4">has completed all twelve chapters and assessments.</p>
-        <p className="mt-6 text-sm text-slate-500">Date: {new Date().toLocaleDateString('en-IN')}</p>
+        <p className="mt-4">has completed all {mods.length} chapters and assessments of {part === 1 ? 'Part I' : 'Part II'}.</p>
+        <p className="mt-5 text-sm text-slate-500">Date: {new Date().toLocaleDateString('en-IN')}</p>
       </div>
       {ok && <div className="flex flex-wrap gap-2 items-center">
-        <DownloadButton className="btn-primary" label="Download certificate (.docx) · ಪ್ರಮಾಣಪತ್ರ" filename="Certificate-Research-Methodology-Orientation.docx" make={() => certificateBlocks(s.name, s.institution, new Date().toLocaleDateString('en-IN'))} />
+        <DownloadButton className="btn-primary" label="Download certificate (.docx) · ಪ್ರಮಾಣಪತ್ರ" filename={`Certificate-Part-${part === 1 ? 'I' : 'II'}.docx`} make={() => certificateBlocks(s.name, s.institution, new Date().toLocaleDateString('en-IN'), part)} />
         {!hosted && <button className="btn-ghost" onClick={() => window.print()}>Print</button>}
       </div>}
-      {ok && !s.name && <p className="text-sm text-amber-800">Add your name in {cloudEnabled ? 'My account' : 'Settings'} first, so it appears on the certificate.</p>}
-    </div>
+    </section>
   );
 }
 

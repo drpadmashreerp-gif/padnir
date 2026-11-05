@@ -2,15 +2,19 @@
 // Every worked example is set in Karnataka's School Education and Literacy Department (DSEL).
 // Numbers inside examples are ILLUSTRATIVE teaching data unless a source is named.
 
+import { ADVANCED } from './advanced';
+
 export type ToolId =
   | 'rq' | 'ethics' | 'sample' | 'stats' | 'survey' | 'coding' | 'mixed'
-  | 'journal' | 'observation' | 'stakeholder' | 'proposal' | 'literature' | 'quality';
+  | 'journal' | 'observation' | 'stakeholder' | 'proposal' | 'literature' | 'quality'
+  | 'align' | 'aiprompt' | 'screen' | 'chooser' | 'efa' | 'cfa' | 'fit' | 'mediation';
 
 export interface Quiz { q: string; options: string[]; answer: number; why: string }
-export interface Lesson { title: string; body: string[] }
+export interface Code { label: string; lang: 'R' | 'Python' | 'SPSS' | 'AMOS'; src: string }
+export interface Lesson { title: string; body: string[]; code?: Code[] }
 export interface Example { title: string; text: string[] }
 export interface Module {
-  id: string; no: number; title: string; titleKn: string; hours: number;
+  id: string; no: number; title: string; titleKn: string; hours: number; part?: 1 | 2;
   objectives: string[]; lessons: Lesson[]; karnataka: Example[];
   activity: { title: string; prompt: string; tool?: ToolId };
   tools: ToolId[]; quiz: Quiz[];
@@ -472,7 +476,16 @@ export const MODULES: Module[] = [
   },
 ];
 
+MODULES.push(...ADVANCED);
+
+export const partOf = (m: Module) => m.part ?? 1;
+export const PART_MODULES = (part: 1 | 2) => MODULES.filter((m) => partOf(m) === part);
+export const PART_HOURS = (part: 1 | 2) => PART_MODULES(part).reduce((s, m) => s + m.hours, 0);
 export const TOTAL_HOURS = MODULES.reduce((s, m) => s + m.hours, 0);
+export const PARTS = {
+  1: { en: 'Part I · Research Methodology Orientation', kn: 'ಭಾಗ ೧ · ಸಂಶೋಧನಾ ವಿಧಾನ ದೃಷ್ಟಿಕೋನ' },
+  2: { en: 'Part II · Advanced Research Methods: Analytics, Innovation and AI', kn: 'ಭಾಗ ೨ · ಮುಂದುವರಿದ ಸಂಶೋಧನಾ ವಿಧಾನಗಳು: ವಿಶ್ಲೇಷಣೆ, ನಾವೀನ್ಯತೆ ಮತ್ತು ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ' },
+} as const;
 
 export const PRE_ASSESSMENT: Quiz[] = [
   { q: 'A hypothesis is…', options: ['A summary of findings', 'A testable prediction', 'A list of references', 'A sampling method'], answer: 1, why: 'It predicts a relationship that data can test.' },

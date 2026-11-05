@@ -69,7 +69,7 @@ export default function App() {
         <nav className="space-y-1" aria-label="Main">{nav.map(([h, l]) => <a key={h} href={h} aria-current={active(h) ? 'page' : undefined} className={`block rounded-lg px-3 py-1.5 text-sm font-semibold ${active(h) ? 'bg-teal-50 text-teal-900' : 'text-slate-700 hover:bg-slate-100'}`}>{both(l)}</a>)}</nav>
         <details open={route === 'book'}>
           <summary className="text-xs uppercase tracking-wider text-slate-500 cursor-pointer">Chapters · ಅಧ್ಯಾಯಗಳು</summary>
-          <ol className="mt-2 space-y-0.5">{MODULES.map((m) => <li key={m.id}><a href={`#/book/${m.id}/0`} className={`block rounded px-2 py-1 text-sm ${route === 'book' && a === m.id ? 'bg-teal-700 text-white' : 'hover:bg-slate-100'}`}>{m.no}. {m.title}<span lang="kn" className="block text-xs opacity-80">{m.titleKn}</span></a></li>)}</ol>
+          <ol className="mt-2 space-y-0.5">{MODULES.map((m, i) => <li key={m.id}>{(m.part ?? 1) === 2 && (MODULES[i - 1]?.part ?? 1) === 1 && <p className="text-xs uppercase tracking-wider text-slate-500 mt-3 mb-1 px-2">Part II · ಭಾಗ ೨</p>}<a href={`#/book/${m.id}/0`} className={`block rounded px-2 py-1 text-sm ${route === 'book' && a === m.id ? 'bg-teal-700 text-white' : 'hover:bg-slate-100'}`}>{m.no}. {m.title}<span lang="kn" className="block text-xs opacity-80">{m.titleKn}</span></a></li>)}</ol>
         </details>
         <div><p className="text-xs text-slate-500 mb-1">Reading language · ಓದುವ ಭಾಷೆ</p><ModeSwitch /></div>
         <div className="flex gap-1 text-xs">

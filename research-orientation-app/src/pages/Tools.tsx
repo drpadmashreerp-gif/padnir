@@ -6,6 +6,7 @@ import { saveFile, hosted } from '../lib/save';
 import { buildDocx, textToBlocks, Block } from '../lib/docx';
 import { DownloadButton } from '../lib/DownloadButton';
 import { referenceList } from '../lib/exports';
+import { Align, AiPrompt, Screen, Chooser, Efa, Cfa, Fit, Mediation } from './AdvancedTools';
 
 export const TOOL_META: Record<ToolId, { name: string; kn: string; desc: string }> = {
   rq: { name: 'Research Question Builder', kn: 'ಸಂಶೋಧನಾ ಪ್ರಶ್ನೆ ರಚನಕಾರ', desc: 'Turn a concern into a focused question and hypothesis.' },
@@ -21,6 +22,14 @@ export const TOOL_META: Record<ToolId, { name: string; kn: string; desc: string 
   proposal: { name: 'Research Proposal Builder', kn: 'ಸಂಶೋಧನಾ ಪ್ರಸ್ತಾವನೆ ರಚನಕಾರ', desc: 'Step-by-step proposal with Word export.' },
   literature: { name: 'Reference Manager', kn: 'ಉಲ್ಲೇಖ ನಿರ್ವಾಹಕ', desc: 'Keep references and format them in APA 7.' },
   quality: { name: 'Quality Checklist', kn: 'ಗುಣಮಟ್ಟ ಪರಿಶೀಲನಾ ಪಟ್ಟಿ', desc: 'Peer-review a study stage by stage.' },
+  align: { name: 'Alignment Matrix', kn: 'ಹೊಂದಾಣಿಕೆ ಕೋಷ್ಟಕ', desc: 'Link each question to objective, hypothesis, data and analysis.' },
+  aiprompt: { name: 'AI Prompt Planner', kn: 'AI ಪ್ರಾಂಪ್ಟ್ ಯೋಜಕ', desc: 'Safe prompts, responsible-use checklist and disclosure statement.' },
+  screen: { name: 'Data Screening', kn: 'ದತ್ತಾಂಶ ಪರಿಶೀಲನೆ', desc: 'Missing values, out-of-range entries, outliers, normality, alpha.' },
+  chooser: { name: 'Technique Chooser', kn: 'ತಂತ್ರ ಆಯ್ಕೆಗಾರ', desc: 'Find the right statistical technique and where it is in SPSS or R.' },
+  efa: { name: 'Exploratory Factor Analysis', kn: 'ಅನ್ವೇಷಣಾತ್ಮಕ ಅಂಶ ವಿಶ್ಲೇಷಣೆ', desc: 'KMO, Bartlett, scree plot and rotated loadings in the browser.' },
+  cfa: { name: 'CFA Reliability & Validity', kn: 'CFA ವಿಶ್ವಸನೀಯತೆ ಮತ್ತು ಸಿಂಧುತ್ವ', desc: 'Composite reliability, AVE and Fornell–Larcker table.' },
+  fit: { name: 'SEM Fit Checker', kn: 'SEM ಹೊಂದಾಣಿಕೆ ಪರಿಶೀಲಕ', desc: 'Judge χ²/df, CFI, TLI, RMSEA, SRMR and get an APA sentence.' },
+  mediation: { name: 'Mediation Analysis', kn: 'ಮಧ್ಯಸ್ಥಿಕೆ ವಿಶ್ಲೇಷಣೆ', desc: 'Indirect effect with a bootstrap confidence interval.' },
 };
 
 const f = (n: number, d = 2) => (Number.isFinite(n) ? n.toFixed(d) : '—');
@@ -437,7 +446,8 @@ function Quality() {
   );
 }
 
-const VIEWS: Record<ToolId, () => JSX.Element> = { rq: RQ, ethics: Ethics, sample: Sample, stats: Stats, survey: Survey, coding: Coding, mixed: Mixed, journal: Journal, observation: Observation, stakeholder: Stakeholder, proposal: Proposal, literature: Literature, quality: Quality };
+const VIEWS: Record<ToolId, () => JSX.Element> = { rq: RQ, ethics: Ethics, sample: Sample, stats: Stats, survey: Survey, coding: Coding, mixed: Mixed, journal: Journal, observation: Observation, stakeholder: Stakeholder, proposal: Proposal, literature: Literature, quality: Quality,
+  align: Align, aiprompt: AiPrompt, screen: Screen, chooser: Chooser, efa: Efa, cfa: Cfa, fit: Fit, mediation: Mediation };
 export function ToolView({ id }: { id: ToolId }) { const V = VIEWS[id]; return <V />; }
 
 export default function Tools({ id }: { id?: ToolId }) {

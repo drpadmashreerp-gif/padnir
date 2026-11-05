@@ -8,6 +8,24 @@ import Quiz from './Quiz';
 import { useCloud, cloudEnabled } from '../lib/cloud';
 import { DownloadButton } from '../lib/DownloadButton';
 import { chapterBlocks } from '../lib/exports';
+import type { Code } from '../data/modules';
+import { useState } from 'react';
+
+function CodeBlock({ c }: { c: Code }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <figure className="border rounded-xl overflow-hidden">
+      <figcaption className="flex flex-wrap items-center justify-between gap-2 bg-slate-100 px-3 py-1.5 text-sm">
+        <span className="font-semibold">{c.label} <span className="chip">{c.lang}</span></span>
+        <span className="flex gap-2">
+          <button className="btn-ghost py-1" onClick={async () => { try { await navigator.clipboard.writeText(c.src); setCopied(true); } catch { setCopied(false); } }}>{copied ? 'Copied ✓' : 'Copy'}</button>
+          <DownloadButton label="Download" filename={`${c.label.replace(/\W+/g, '-').toLowerCase()}.txt`} make={() => c.src} />
+        </span>
+      </figcaption>
+      <pre className="overflow-x-auto p-3 text-xs leading-relaxed bg-slate-900 text-slate-100"><code>{c.src}</code></pre>
+    </figure>
+  );
+}
 import { ToolView, TOOL_META } from './Tools';
 
 export function pagesOf(m: Module) {
@@ -94,7 +112,8 @@ export default function Book({ mid, page, go }: { mid: string; page: number; go:
         )}
 
         {pg.kind === 'lesson' && (
-          <div className="space-y-5 leading-relaxed">{m.lessons[pg.i].body.map((b, i) => <Bi key={i} en={b} kn={k.lessons[pg.i].body[i]} />)}</div>
+          <div className="space-y-5 leading-relaxed">{m.lessons[pg.i].body.map((b, i) => <Bi key={i} en={b} kn={k.lessons[pg.i].body[i]} />)}
+            {m.lessons[pg.i].code?.map((c) => <CodeBlock key={c.label} c={c} />)}</div>
         )}
 
         {pg.kind === 'karnataka' && (

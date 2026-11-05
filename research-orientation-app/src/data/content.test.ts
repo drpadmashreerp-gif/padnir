@@ -1,9 +1,17 @@
-import { MODULES, PRE_ASSESSMENT, TOTAL_HOURS } from './modules';
+import { MODULES, PRE_ASSESSMENT, TOTAL_HOURS, PART_HOURS, PART_MODULES } from './modules';
 import { KN, PRE_KN } from './modules.kn';
 
-test('course totals 60 hours across 12 chapters', () => {
-  expect(MODULES).toHaveLength(12);
-  expect(TOTAL_HOURS).toBe(60);
+test('Part I is 60 hours in 12 chapters; Part II is 20 hours in 5 chapters', () => {
+  expect(PART_MODULES(1)).toHaveLength(12);
+  expect(PART_HOURS(1)).toBe(60);
+  expect(PART_MODULES(2)).toHaveLength(5);
+  expect(PART_HOURS(2)).toBe(20);
+  expect(TOTAL_HOURS).toBe(80);
+  expect(MODULES.map((m) => m.no)).toEqual(Array.from({ length: 17 }, (_, i) => i + 1));
+});
+test('every tool a chapter names exists', async () => {
+  const { TOOL_META } = await import('../pages/Tools');
+  for (const m of MODULES) { for (const t of m.tools) expect(TOOL_META[t], `${m.id} ${t}`).toBeDefined(); if (m.activity.tool) expect(TOOL_META[m.activity.tool]).toBeDefined(); }
 });
 test('Kannada edition mirrors English item for item', () => {
   for (const m of MODULES) {

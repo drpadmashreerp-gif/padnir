@@ -5,6 +5,7 @@ import { zipSync, strToU8 } from 'fflate';
 export type Block =
   | { t: 'title' | 'h1' | 'h2' | 'p' | 'bullet' | 'note' | 'center' | 'big'; text: string }
   | { t: 'pagebreak' }
+  | { t: 'code'; text: string }
   | { t: 'blank'; lines?: number }
   | { t: 'table'; rows: string[][]; header?: boolean; widths?: number[] };
 
@@ -35,6 +36,7 @@ function table(rows: string[][], header = true, widths?: number[]) {
 
 export function buildDocx(blocks: Block[]): Uint8Array {
   const body = blocks.map((b) => {
+    if (b.t === 'code') return b.text.split('\n').map((l) => `<w:p><w:pPr><w:spacing w:after="0" w:line="240" w:lineRule="auto"/><w:shd w:val="clear" w:color="auto" w:fill="F1F5F9"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Consolas" w:hAnsi="Consolas" w:cs="Consolas"/><w:sz w:val="17"/></w:rPr><w:t xml:space="preserve">${esc(l) || ' '}</w:t></w:r></w:p>`).join('') + '<w:p/>';
     if (b.t === 'pagebreak') return '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
     if (b.t === 'blank') return Array(b.lines ?? 1).fill('<w:p/>').join('');
     if (b.t === 'table') return table(b.rows, b.header ?? true, b.widths);

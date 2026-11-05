@@ -21,13 +21,31 @@ Kalika Chetarike, Nali Kali, KPS bilingual sections, SDMCs, Chinnara Angala, NAS
 | 11 | Research Communication · ಸಂಶೋಧನಾ ಸಂವಹನ | 6 |
 | 12 | Quality Assurance in Research · ಸಂಶೋಧನೆಯಲ್ಲಿ ಗುಣಮಟ್ಟ ಭರವಸೆ | 6 |
 
+**Part II · Advanced Research Methods: Analytics, Innovation and AI (20 hours)** — one chapter for each of the
+five themes of an advanced faculty development programme, with SPSS/AMOS steps and R/Python code:
+
+| Ch | Title | Hours |
+|---|---|---|
+| 13 | Research Design, Proposal Development and AI Assistance · ಸಂಶೋಧನಾ ವಿನ್ಯಾಸ, ಪ್ರಸ್ತಾವನೆ ರಚನೆ ಮತ್ತು AI ನೆರವು | 4 |
+| 14 | Measurement, Scales and Data Preparation · ಮಾಪನ, ಮಾಪಕಗಳು ಮತ್ತು ದತ್ತಾಂಶ ಸಿದ್ಧತೆ | 4 |
+| 15 | Construct Exploration and Validation: EFA and CFA · EFA ಮತ್ತು CFA | 4 |
+| 16 | Structural Equation Modelling (SEM) · ರಚನಾತ್ಮಕ ಸಮೀಕರಣ ಮಾದರೀಕರಣ | 4 |
+| 17 | Academic Writing, Publication and AI-Enabled Research · ಶೈಕ್ಷಣಿಕ ಬರವಣಿಗೆ, ಪ್ರಕಟಣೆ ಮತ್ತು AI ಆಧಾರಿತ ಸಂಶೋಧನೆ | 4 |
+
+Part II tools run in the browser on sample data or the user's own pasted data: alignment matrix, AI prompt
+planner with responsible-use checklist and disclosure statement, data screening (missing, out-of-range,
+straight-lining, outliers, skewness/kurtosis, Cronbach's alpha), technique chooser, exploratory factor analysis
+(KMO, Bartlett, scree plot, principal axis factoring with varimax), CFA reliability and validity (CR, AVE,
+Fornell–Larcker), SEM fit checker with an APA sentence, and bootstrap mediation. The EFA, KMO, Bartlett and alpha
+calculations are checked against numpy. Each part has its own certificate.
+
 Each chapter is a set of pages: opener with objectives → lessons → "From Karnataka classrooms" examples →
 activity (with an embedded tool and a response sent to the facilitator desk) → quiz with feedback.
 
 **Bilingual reading.** Every chapter, example, activity and quiz exists in English and Kannada.
 Readers switch between English, ಕನ್ನಡ, or both side by side (default). Menus are shown in both languages.
 
-**13 research tools:** research question builder, ethics decision tree, sample size calculator, statistics
+**21 research tools** (13 in Part I, 8 in Part II). Part I tools: research question builder, ethics decision tree, sample size calculator, statistics
 workbench (descriptives, Welch and paired t-tests, one-way ANOVA, chi-square, Pearson r — with p-values and
 effect sizes), survey builder, qualitative coding practice, mixed-methods design selector with joint display,
 action research journal, classroom observation timer, stakeholder map, proposal builder (Word export / print),
