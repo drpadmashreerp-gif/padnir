@@ -3,19 +3,21 @@
 import { zipSync, strToU8 } from 'fflate';
 
 export type Block =
-  | { t: 'title' | 'h1' | 'h2' | 'p' | 'bullet' | 'note'; text: string }
+  | { t: 'title' | 'h1' | 'h2' | 'p' | 'bullet' | 'note' | 'center' | 'big'; text: string }
+  | { t: 'pagebreak' }
   | { t: 'blank'; lines?: number }
   | { t: 'table'; rows: string[][]; header?: boolean; widths?: number[] };
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const SIZE = { title: 32, h1: 28, h2: 24, p: 22, bullet: 22, note: 18 } as const;
+const SIZE = { title: 32, h1: 28, h2: 24, p: 22, bullet: 22, note: 18, center: 24, big: 44 } as const;
 
 function run(text: string, size: number, bold = false, italic = false) {
   return `<w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Nirmala UI"/>${bold ? '<w:b/><w:bCs/>' : ''}${italic ? '<w:i/>' : ''}<w:sz w:val="${size}"/><w:szCs w:val="${size}"/></w:rPr><w:t xml:space="preserve">${esc(text)}</w:t></w:r>`;
 }
 function para(text: string, kind: keyof typeof SIZE) {
-  const heading = kind === 'title' || kind === 'h1' || kind === 'h2';
-  const ppr = `<w:pPr><w:spacing w:before="${heading ? 240 : 0}" w:after="120" w:line="300" w:lineRule="auto"/>${kind === 'title' ? '<w:jc w:val="center"/>' : ''}${kind === 'bullet' ? '<w:ind w:left="360" w:hanging="240"/>' : ''}</w:pPr>`;
+  const heading = kind === 'title' || kind === 'h1' || kind === 'h2' || kind === 'big';
+  const centered = kind === 'title' || kind === 'center' || kind === 'big';
+  const ppr = `<w:pPr><w:spacing w:before="${heading ? 240 : 0}" w:after="120" w:line="300" w:lineRule="auto"/>${centered ? '<w:jc w:val="center"/>' : ''}${kind === 'bullet' ? '<w:ind w:left="360" w:hanging="240"/>' : ''}</w:pPr>`;
   const lines = text.split('\n');
   const runs = lines.map((l, i) => (i ? '<w:r><w:br/></w:r>' : '') + run((kind === 'bullet' && i === 0 ? '• ' : '') + l, SIZE[kind], heading, kind === 'note')).join('');
   return `<w:p>${ppr}${runs}</w:p>`;
@@ -33,6 +35,7 @@ function table(rows: string[][], header = true, widths?: number[]) {
 
 export function buildDocx(blocks: Block[]): Uint8Array {
   const body = blocks.map((b) => {
+    if (b.t === 'pagebreak') return '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
     if (b.t === 'blank') return Array(b.lines ?? 1).fill('<w:p/>').join('');
     if (b.t === 'table') return table(b.rows, b.header ?? true, b.widths);
     return para(b.text, b.t);

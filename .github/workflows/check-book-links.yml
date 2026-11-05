@@ -1,0 +1,22 @@
+# Checks every external link in the book's Resource library each Monday and whenever the book changes.
+name: Check book links
+
+on:
+  schedule:
+    - cron: '17 3 * * 1'
+  push:
+    paths: ['research-orientation-app/src/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --max-retries 3 --timeout 30 --user-agent "Mozilla/5.0" --include-verbatim "research-orientation-app/src/pages/Pages.tsx"
+          fail: true

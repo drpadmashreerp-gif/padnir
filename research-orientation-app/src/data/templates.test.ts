@@ -1,10 +1,8 @@
 import { unzipSync, strFromU8 } from 'fflate';
 import { TEMPLATES } from './templates';
 import { buildDocx } from '../lib/docx';
-import { writeFileSync, mkdirSync } from 'node:fs';
 
 test('every template builds a .docx with the three required parts', () => {
-  mkdirSync('dist/templates', { recursive: true });
   for (const tp of TEMPLATES) {
     const bytes = buildDocx(tp.blocks);
     const parts = unzipSync(bytes);
@@ -12,6 +10,5 @@ test('every template builds a .docx with the three required parts', () => {
     const xml = strFromU8(parts['word/document.xml']);
     expect(xml).toContain(tp.name.split(' ')[0]);
     expect(xml).not.toMatch(/&(?!amp;|lt;|gt;)/);
-    writeFileSync(`dist/templates/${tp.id}.docx`, bytes);
   }
 });

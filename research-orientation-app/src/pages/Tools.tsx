@@ -4,6 +4,8 @@ import { useStore } from '../lib/store';
 import * as st from '../lib/stats';
 import { saveFile, hosted } from '../lib/save';
 import { buildDocx, textToBlocks, Block } from '../lib/docx';
+import { DownloadButton } from '../lib/DownloadButton';
+import { referenceList } from '../lib/exports';
 
 export const TOOL_META: Record<ToolId, { name: string; kn: string; desc: string }> = {
   rq: { name: 'Research Question Builder', kn: 'ಸಂಶೋಧನಾ ಪ್ರಶ್ನೆ ರಚನಕಾರ', desc: 'Turn a concern into a focused question and hypothesis.' },
@@ -127,6 +129,7 @@ function Stats() {
   const [tbl, setTbl] = useState('62 38\n45 55');
   const A = st.parseNums(a), B = st.parseNums(b), Cn = st.parseNums(c);
   const note = <p className="text-xs text-slate-500">Data are illustrative. Paste your own numbers separated by spaces, commas or new lines.</p>;
+  const resRef = useRef<HTMLDivElement>(null);
   let out: JSX.Element | null = null;
   if (tab === 'Descriptives') {
     const r = st.describe(A);
@@ -174,7 +177,9 @@ function Stats() {
           {L[2] && <Area label={L[2]} value={c} onChange={(e) => setC(e.target.value)} />}
         </div>
       )}
-      <div className="ka">{out ?? <p>Enter enough data (at least two values per group).</p>}</div>
+      <div className="ka" ref={resRef}>{out ?? <p>Enter enough data (at least two values per group).</p>}</div>
+      <DownloadButton label="Download result (.txt)" filename={`statistics-${tab.replace(/\W+/g, '-').toLowerCase()}.txt`}
+        make={() => `${tab}\n${'='.repeat(tab.length)}\n\nData\n${tab === 'Chi-square' ? tbl : [a, tab === 'Descriptives' ? '' : b, tab === 'ANOVA' ? c : ''].filter(Boolean).map((x, i) => `Group ${'ABC'[i]}: ${x}`).join('\n')}\n\nResult\n${resRef.current?.innerText ?? ''}\n\nComputed with the Research Methodology Orientation statistics workbench on ${new Date().toLocaleDateString('en-IN')}.\n`} />
       {note}
     </div>
   );
@@ -238,6 +243,7 @@ function Coding() {
           <input className="input" placeholder="Code" value={codes[i] || ''} onChange={(ev) => setCode(i, ev.target.value)} aria-label={`Code for excerpt ${i + 1}`} />
         </div>
       ))}
+      {codes.some((c) => c?.trim()) && <DownloadButton label="Download codes (CSV)" filename="interview-codes.csv" make={() => 'Excerpt,Code\n' + EXCERPTS.map((e, i) => `"${e.replace(/"/g, '""')}","${(codes[i] || '').replace(/"/g, '""')}"`).join('\n')} />}
       {groups.size > 0 && <div className="ka"><strong>Your codes → candidate themes</strong>
         <ul className="list-disc pl-5">{[...groups].map(([c, ids]) => <li key={c}>{c} (excerpts {ids.join(', ')})</li>)}</ul>
         <p className="text-sm mt-2">One possible reading: <em>Language as a bridge</em> (T1, T3, T4); <em>Assessment burden and meaning</em> (T2, T5); <em>Support that teachers want</em> (T4, T6).</p></div>}
@@ -279,7 +285,10 @@ function Journal() {
       <div className="flex flex-wrap gap-1">{['Plan', 'Act', 'Observe', 'Reflect'].map((x) => <button key={x} className={stage === x ? 'btn-primary' : 'btn-ghost'} onClick={() => setStage(x)}>{x}</button>)}</div>
       <textarea className="input min-h-[90px]" value={text} onChange={(e) => setText(e.target.value)} aria-label="Journal entry"
         placeholder={{ Plan: 'Problem in my practice… change I will try… for how long… evidence I will collect…', Act: 'What I did today…', Observe: 'What happened? What did the evidence show?', Reflect: 'What does it mean? What will I change in the next cycle?' }[stage]} />
-      <button className="btn-primary" disabled={!text.trim()} onClick={() => { set((p) => ({ journal: [{ date: new Date().toLocaleString(), stage, text }, ...p.journal] })); setText(''); }}>Save entry</button>
+      <div className="flex flex-wrap gap-2 items-center">
+        <button className="btn-primary" disabled={!text.trim()} onClick={() => { set((p) => ({ journal: [{ date: new Date().toLocaleString('en-IN'), stage, text }, ...p.journal] })); setText(''); }}>Save entry</button>
+        {s.journal.length > 0 && <DownloadButton label="Download journal (.docx)" filename="Action-Research-Journal.docx" make={() => [{ t: 'title', text: 'Action Research Journal\nಕ್ರಿಯಾ ಸಂಶೋಧನಾ ದಿನಚರಿ' }, { t: 'center', text: [s.name, s.institution].filter(Boolean).join(' · ') || ' ' }, ...[...s.journal].reverse().flatMap((j): Block[] => [{ t: 'h2', text: `${j.stage} · ${j.date}` }, { t: 'p', text: j.text }])]} />}
+      </div>
       <ul className="space-y-2">{s.journal.map((j, i) => <li key={i} className="border-l-4 border-teal-600 pl-3"><span className="chip">{j.stage}</span> <span className="text-xs text-slate-500">{j.date}</span><p>{j.text}</p></li>)}</ul>
     </div>
   );
@@ -299,6 +308,7 @@ function Observation() {
       <div className="flex flex-wrap items-center gap-2">
         <button className="btn-primary" onClick={() => setRun(!run)}>{run ? 'Pause' : 'Start'}</button>
         <button className="btn-ghost" onClick={() => { setRun(false); setSec(0); setCounts({}); }}>Reset</button>
+        {total > 0 && <DownloadButton label="Download counts (CSV)" filename="classroom-observation.csv" make={() => 'Category,Count,Percent\n' + OBS.map((o) => `${o},${counts[o] || 0},${Math.round(((counts[o] || 0) / total) * 100)}`).join('\n') + `\nTotal intervals,${total},100\nDuration (s),${sec},\nInterval (s),${interval},`} />}
         <span className="font-mono text-lg">{String(Math.floor(sec / 60)).padStart(2, '0')}:{String(sec % 60).padStart(2, '0')}</span>
         <label className="text-sm">Record every <input type="number" className="input inline w-20" value={interval} min={5} onChange={(e) => setIntv(Math.max(5, +e.target.value))} /> s</label>
         {due && <span className="chip bg-amber-100 text-amber-900">Record now</span>}
@@ -399,6 +409,7 @@ function Literature() {
       <div className="flex gap-2">
         <button className="btn-primary" disabled={!d.a || !d.t} onClick={() => { save([...refs, d]); setD({ a: '', y: '', t: '', s: '' }); }}>Add reference</button>
         {refs.length > 0 && <button className="btn-ghost" onClick={() => set((p) => ({ proposal: { ...p.proposal, references: sorted.map(apa).join('\n') } }))}>Copy list into proposal</button>}
+        {refs.length > 0 && <DownloadButton label="Download list (.docx)" filename="References-APA.docx" make={() => [{ t: 'title', text: 'References (APA 7)' }, ...referenceList(s).map((x): Block => ({ t: 'p', text: x }))]} />}
       </div>
       <ol className="space-y-1 pl-6 -indent-6">{sorted.map((r, i) => <li key={i} className="text-sm">{apa(r)} <button className="text-rose-700" onClick={() => save(refs.filter((x) => x !== r))} aria-label="Remove">✕</button></li>)}</ol>
       <p className="text-xs text-slate-500">Check journal quality against the UGC-CARE list before citing.</p>

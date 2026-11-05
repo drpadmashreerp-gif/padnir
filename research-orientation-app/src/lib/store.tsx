@@ -14,8 +14,10 @@ export interface State {
   submissions: Submission[];
   activeDays: string[];                         // ISO dates, for streaks
   lastPage?: string;
+  updatedAt?: number;
+  ownerId?: string;                             // online account this device copy belongs to                           // last local change (ms), used when merging with the online copy
 }
-const initial: State = {
+export const initial: State = {
   name: '', institution: '', role: 'participant', lang: 'en', readMode: 'both', fontSize: 16, highContrast: false,
   pagesRead: {}, quiz: {}, notes: {}, bookmarks: [], journal: [], proposal: {}, submissions: [], activeDays: [],
 };
@@ -23,7 +25,7 @@ const KEY = 'rmo-state-v1';
 function load(): State {
   try { return { ...initial, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch { return initial; }
 }
-type Ctx = { s: State; set: (p: Partial<State> | ((s: State) => Partial<State>)) => void };
+type Ctx = { s: State; set: (p: Partial<State> | ((s: State) => Partial<State>)) => void; replace: (next: State) => void };
 const C = createContext<Ctx>(null!);
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [s, setS] = useState<State>(load);
@@ -37,8 +39,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const today = new Date().toISOString().slice(0, 10);
     setS((p) => (p.activeDays.includes(today) ? p : { ...p, activeDays: [...p.activeDays, today] }));
   }, []);
-  const set: Ctx['set'] = (p) => setS((prev) => ({ ...prev, ...(typeof p === 'function' ? p(prev) : p) }));
-  return <C.Provider value={{ s, set }}>{children}</C.Provider>;
+  const set: Ctx['set'] = (p) => setS((prev) => ({ ...prev, ...(typeof p === 'function' ? p(prev) : p), updatedAt: Date.now() }));
+  const replace = (next: State) => setS({ ...initial, ...next });
+  return <C.Provider value={{ s, set, replace }}>{children}</C.Provider>;
 }
 export const useStore = () => useContext(C);
 

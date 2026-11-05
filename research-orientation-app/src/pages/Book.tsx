@@ -5,6 +5,9 @@ import { useStore } from '../lib/store';
 import { Bi, ModeSwitch } from '../lib/Bi';
 import { T } from '../i18n';
 import Quiz from './Quiz';
+import { useCloud, cloudEnabled } from '../lib/cloud';
+import { DownloadButton } from '../lib/DownloadButton';
+import { chapterBlocks } from '../lib/exports';
 import { ToolView, TOOL_META } from './Tools';
 
 export function pagesOf(m: Module) {
@@ -20,6 +23,7 @@ export function pagesOf(m: Module) {
 
 export default function Book({ mid, page, go }: { mid: string; page: number; go: (h: string) => void }) {
   const { s, set } = useStore();
+  const cloud = useCloud();
   const t = T[s.lang];
   const idx = Math.max(0, MODULES.findIndex((m) => m.id === mid));
   const m = MODULES[idx];
@@ -47,6 +51,7 @@ export default function Book({ mid, page, go }: { mid: string; page: number; go:
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [m.id, p]);
+  useEffect(() => { if (pg.kind === 'activity') cloud.refreshFeedback(); }, [m.id, pg.kind, cloud.session?.user.id]);
 
   const marked = s.bookmarks.includes(key);
   const sub = s.submissions.find((x) => x.moduleId === m.id);
@@ -78,6 +83,10 @@ export default function Book({ mid, page, go }: { mid: string; page: number; go:
             <Bi as="h3" className="font-semibold" en="Learning objectives" kn="ಕಲಿಕಾ ಉದ್ದೇಶಗಳು" />
             <ol className="list-decimal pl-6 space-y-2">{m.objectives.map((o, i) => <li key={o}><Bi en={o} kn={k.objectives[i]} /></li>)}</ol>
             <div className="flex flex-wrap gap-2 pt-2">
+              <DownloadButton label="Download this chapter (.docx) · ಅಧ್ಯಾಯ ಡೌನ್‌ಲೋಡ್" filename={`Chapter-${m.no}-${m.title.replace(/\W+/g, '-')}.docx`} make={() => chapterBlocks(m, s.readMode)} />
+              {cloudEnabled && <a className="btn-ghost" href={`#/discuss/${m.id}`}>💬 Discussion · ಚರ್ಚೆ</a>}
+            </div>
+            <div className="flex flex-wrap gap-2">
               <span className="text-sm text-slate-500">Tools · ಸಾಧನಗಳು:</span>
               {m.tools.map((id) => <a key={id} className="chip" href={`#/tools/${id}`}>{TOOL_META[id].name} · <span lang="kn">{TOOL_META[id].kn}</span></a>)}
             </div>
@@ -111,12 +120,14 @@ export default function Book({ mid, page, go }: { mid: string; page: number; go:
                 const text = e.target.value.trim(); if (!text) return;
                 set((st) => ({ submissions: [...st.submissions.filter((x) => x.moduleId !== m.id),
                   { id: m.id + Date.now(), moduleId: m.id, text, date: new Date().toLocaleDateString('en-IN'), feedback: sub?.feedback }] }));
+                cloud.saveSubmission(m.id, text);
               }} />
             {sub?.feedback && <p className="ka"><strong>Facilitator feedback · ಪ್ರತಿಕ್ರಿಯೆ:</strong> {sub.feedback}</p>}
           </div>
         )}
 
         {pg.kind === 'quiz' && <Quiz key={m.id} id={m.id} items={m.quiz} kn={k.quiz} />}
+        {pg.kind === 'quiz' && cloudEnabled && <p className="mt-4"><a className="btn-ghost" href={`#/discuss/${m.id}`}>💬 Discuss this chapter with colleagues · ಸಹೋದ್ಯೋಗಿಗಳೊಂದಿಗೆ ಚರ್ಚಿಸಿ</a></p>}
       </div>
 
       <details className="card mt-4">

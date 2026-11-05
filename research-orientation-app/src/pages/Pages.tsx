@@ -5,6 +5,10 @@ import { ModeSwitch } from '../lib/Bi';
 import { TEMPLATES, Template } from '../data/templates';
 import { buildDocx } from '../lib/docx';
 import { saveFile, outcomeText, hosted } from '../lib/save';
+import { useCloud, cloudEnabled } from '../lib/cloud';
+import { Announcements, FacilitatorLive } from './Online';
+import { DownloadButton } from '../lib/DownloadButton';
+import { bookBlocks, certificateBlocks, portfolioBlocks } from '../lib/exports';
 import { useStore, streak } from '../lib/store';
 import { T } from '../i18n';
 import { pagesOf } from './Book';
@@ -27,6 +31,7 @@ const Bar = ({ v, label }: { v: number; label: string }) => (
 /* ---------- Cover + dashboard ---------- */
 export function Home() {
   const { s, set } = useStore();
+  const cloud = useCloud();
   const t = T[s.lang];
   const pct = overall(s);
   const next = MODULES.find((m) => moduleProgress(s, m.id) < 100);
@@ -45,7 +50,14 @@ export function Home() {
         </div>
       </section>
 
-      {!s.name && (
+      {cloudEnabled && !cloud.session && (
+        <section className="card flex flex-wrap items-center justify-between gap-2">
+          <p className="text-sm">Sign in to save your work online, send activities to your facilitator and join discussions. · ಆನ್‌ಲೈನ್ ಉಳಿಸಲು ಸೈನ್ ಇನ್ ಮಾಡಿ.</p>
+          <a className="btn-primary" href="#/account">Sign in · ಸೈನ್ ಇನ್</a>
+        </section>
+      )}
+      <Announcements />
+      {!cloudEnabled && !s.name && (
         <section className="card grid sm:grid-cols-3 gap-2 items-end">
           <label><span className="label">Your name</span><input className="input" onBlur={(e) => set({ name: e.target.value })} /></label>
           <label><span className="label">DIET / institution</span><input className="input" placeholder="e.g. DIET Mysuru" onBlur={(e) => set({ institution: e.target.value })} /></label>
@@ -75,7 +87,10 @@ export function Contents() {
   const t = T[s.lang];
   return (
     <section>
-      <h2 className="text-xl font-bold text-teal-900 mb-3">Contents · <span lang="kn">ಪರಿವಿಡಿ</span></h2>
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <h2 className="text-xl font-bold text-teal-900">Contents · <span lang="kn">ಪರಿವಿಡಿ</span></h2>
+        <DownloadButton label="Download the whole book (.docx) · ಪೂರ್ಣ ಪುಸ್ತಕ" filename="Research-Methodology-Orientation-Book.docx" make={() => bookBlocks(s.readMode)} />
+      </div>
       <ol className="grid md:grid-cols-2 gap-3">
         {MODULES.map((m) => {
           const pr = moduleProgress(s, m.id);
@@ -122,6 +137,7 @@ export function Search({ q }: { q: string }) {
 /* ---------- Progress & badges ---------- */
 export function Progress() {
   const { s } = useStore();
+  const cloud = useCloud();
   const badges = [
     ['📘', 'First page', Object.keys(s.pagesRead).length > 0],
     ['🧭', 'Pre-assessment taken', s.quiz.pre !== undefined],
@@ -135,7 +151,11 @@ export function Progress() {
   ] as const;
   return (
     <div className="max-w-4xl mx-auto space-y-4">
-      <h2 className="text-2xl font-bold text-teal-900">My progress</h2>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-2xl font-bold text-teal-900">My progress · ನನ್ನ ಪ್ರಗತಿ</h2>
+        <DownloadButton className="btn-primary" label="Download my portfolio (.docx) · ನನ್ನ ಕಡತ" filename="My-Research-Portfolio.docx" make={() => portfolioBlocks(s, cloud.session?.user.email)} />
+      </div>
+      <p className="text-sm text-slate-600">The portfolio collects your scores, activity responses and feedback, journal, notes, proposal draft and references in one Word file.</p>
       <div className="card overflow-x-auto">
         <table className="w-full text-sm"><thead><tr className="text-left"><th>Chapter</th><th>Hours</th><th className="w-1/3">Read</th><th>Quiz</th><th>Activity</th></tr></thead>
           <tbody>{MODULES.map((m) => <tr key={m.id} className="border-t"><td className="py-1">{m.no}. {m.title}</td><td>{m.hours}</td>
@@ -211,6 +231,16 @@ const COHORT = [
   { n: 'Participant 04', d: 'DIET Udupi', q: [100, 75, 100, 100, 75, 100, 100, 75, 100, 75, 75, 100] },
 ];
 export function Facilitator() {
+  const cloud = useCloud();
+  if (cloudEnabled) return (
+    <div className="max-w-6xl mx-auto space-y-4">
+      <h2 className="text-2xl font-bold text-teal-900">Facilitator desk · ಸಂಪನ್ಮೂಲ ವ್ಯಕ್ತಿ ವಿಭಾಗ</h2>
+      {cloud.isStaff ? <FacilitatorLive /> : <p className="card">This desk is for facilitators. Ask your administrator to give your account the facilitator role.</p>}
+    </div>
+  );
+  return <FacilitatorSample />;
+}
+function FacilitatorSample() {
   const { s, set } = useStore();
   const [fb, setFb] = useState<Record<string, string>>({});
   const avg = MODULES.map((m, i) => { const xs = [...COHORT.map((c) => c.q[i]), s.quiz[m.id] ?? 0]; return Math.round(xs.reduce((a, b) => a + b, 0) / xs.length); });
@@ -268,8 +298,11 @@ export function Certificate() {
         <p className="mt-4">has completed all twelve chapters and assessments.</p>
         <p className="mt-6 text-sm text-slate-500">Date: {new Date().toLocaleDateString('en-IN')}</p>
       </div>
-      {ok && !hosted && <button className="btn-primary" onClick={() => window.print()}>Print / Save as PDF</button>}
-      {ok && hosted && <p className="text-sm text-slate-600">To print, open the standalone HTML book in a browser and use Print. · ಮುದ್ರಿಸಲು ಸ್ವತಂತ್ರ HTML ಪುಸ್ತಕವನ್ನು ಬ್ರೌಸರ್‌ನಲ್ಲಿ ತೆರೆಯಿರಿ.</p>}
+      {ok && <div className="flex flex-wrap gap-2 items-center">
+        <DownloadButton className="btn-primary" label="Download certificate (.docx) · ಪ್ರಮಾಣಪತ್ರ" filename="Certificate-Research-Methodology-Orientation.docx" make={() => certificateBlocks(s.name, s.institution, new Date().toLocaleDateString('en-IN'))} />
+        {!hosted && <button className="btn-ghost" onClick={() => window.print()}>Print</button>}
+      </div>}
+      {ok && !s.name && <p className="text-sm text-amber-800">Add your name in {cloudEnabled ? 'My account' : 'Settings'} first, so it appears on the certificate.</p>}
     </div>
   );
 }
@@ -280,9 +313,10 @@ export function Settings() {
   return (
     <div className="max-w-xl mx-auto card space-y-4">
       <h2 className="text-2xl font-bold text-teal-900">Settings</h2>
+      {cloudEnabled ? <p className="text-sm">Name, DIET and role are managed in <a className="text-teal-700 underline" href="#/account">My account</a>.</p> : <>
       <label className="block"><span className="label">Name</span><input className="input" value={s.name} onChange={(e) => set({ name: e.target.value })} /></label>
       <label className="block"><span className="label">DIET / institution</span><input className="input" value={s.institution} onChange={(e) => set({ institution: e.target.value })} /></label>
-      <label className="block"><span className="label">Role</span><select className="input" value={s.role} onChange={(e) => set({ role: e.target.value as typeof s.role })}><option value="participant">Participant (DIET faculty)</option><option value="facilitator">Facilitator / Resource person</option><option value="admin">Administrator</option></select></label>
+      <label className="block"><span className="label">Role</span><select className="input" value={s.role} onChange={(e) => set({ role: e.target.value as typeof s.role })}><option value="participant">Participant (DIET faculty)</option><option value="facilitator">Facilitator / Resource person</option><option value="admin">Administrator</option></select></label></>}
       <label className="block"><span className="label">Interface language</span><select className="input" value={s.lang} onChange={(e) => set({ lang: e.target.value as 'en' | 'kn' })}><option value="en">English</option><option value="kn">ಕನ್ನಡ</option></select></label>
       <label className="block"><span className="label">Text size: {s.fontSize}px</span><input type="range" min={14} max={22} value={s.fontSize} onChange={(e) => set({ fontSize: +e.target.value })} className="w-full" /></label>
       <label className="flex gap-2 items-center"><input type="checkbox" checked={s.highContrast} onChange={(e) => set({ highContrast: e.target.checked })} /> High-contrast mode</label>

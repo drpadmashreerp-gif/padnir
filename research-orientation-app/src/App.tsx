@@ -3,6 +3,8 @@ import { useStore } from './lib/store';
 import { T } from './i18n';
 import { MODULES, ToolId } from './data/modules';
 import { ModeSwitch } from './lib/Bi';
+import { useCloud, cloudEnabled, syncLabel } from './lib/cloud';
+import { Account, Discussion } from './pages/Online';
 import Book from './pages/Book';
 import Tools from './pages/Tools';
 import { Home, Contents, Search, Progress, Pre, Resources, Facilitator, Certificate, Settings, overall } from './pages/Pages';
@@ -15,6 +17,7 @@ const useHash = () => {
 
 export default function App() {
   const { s, set } = useStore();
+  const cloud = useCloud();
   const t = T[s.lang];
   const hash = useHash();
   const [menu, setMenu] = useState(false);
@@ -34,13 +37,16 @@ export default function App() {
     case 'facilitator': page = <Facilitator />; break;
     case 'certificate': page = <Certificate />; break;
     case 'settings': page = <Settings />; break;
+    case 'account': page = <Account />; break;
+    case 'discuss': page = <Discussion mid={a || 'm1'} />; break;
     case 'search': page = <Search q={decodeURIComponent(a || '')} />; break;
     default: page = <Home />;
   }
   type K = keyof typeof T.en;
   const both = (k: K) => <>{T.en[k]}<span lang="kn" className="block text-xs font-normal opacity-80">{T.kn[k]}</span></>;
   const nav: [string, K][] = [['#/', 'cover'], ['#/contents', 'contents'], ['#/pre', 'pre'], ['#/tools', 'tools'], ['#/resources', 'resources'], ['#/progress', 'progress'],
-    ...(s.role !== 'participant' ? [['#/facilitator', 'facilitator'] as [string, K]] : []), ['#/certificate', 'certificate'], ['#/settings', 'settings']];
+    ...((cloudEnabled ? cloud.isStaff : s.role !== 'participant') ? [['#/facilitator', 'facilitator'] as [string, K]] : []), ['#/certificate', 'certificate'],
+    ...(cloudEnabled ? [['#/account', 'account'] as [string, K]] : []), ['#/settings', 'settings']];
   const active = (h: string) => (h === '#/' ? hash === '#/' || hash === '' : hash.startsWith(h));
 
   return (
@@ -56,6 +62,7 @@ export default function App() {
           <input className="input" placeholder={t.search} value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search" />
         </form>
         <div>
+          {cloudEnabled && <a href="#/account" className={`block text-xs mb-2 rounded px-2 py-1 ${cloud.session ? 'bg-teal-50 text-teal-900' : 'bg-amber-50 text-amber-900'}`}>{cloud.session ? `${cloud.profile?.name || cloud.session.user.email} · ` : ''}{syncLabel[cloud.sync]}</a>}
           <div className="flex justify-between text-xs text-slate-500 mb-1"><span>Course</span><span>{overall(s)}% {t.complete}</span></div>
           <div className="h-2 bg-slate-200 rounded"><div className="h-2 bg-teal-600 rounded" style={{ width: overall(s) + '%' }} /></div>
         </div>

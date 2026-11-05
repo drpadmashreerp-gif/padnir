@@ -40,6 +40,17 @@ action research planner, codebook, policy brief, peer review checklist), glossar
 table, chapter analytics, CSV export, feedback on submissions), printable certificate, text size, high-contrast
 mode, backup/restore, offline use (PWA).
 
+## Online version (accounts, saved work, live cohort)
+Hosted on GitHub Pages with a free Supabase database: **https://drpadmashreerp-gif.github.io/padnir/**
+once set up. Follow **[SETUP.md](SETUP.md)** (about 30 minutes, once). Online, people sign in with an
+emailed code; progress, notes, journal, proposal and activity responses are saved online and merged across
+devices; facilitators see the real cohort, give feedback and post announcements; every chapter has a
+discussion board. Database rules (`supabase/schema.sql`) keep each participant's work private.
+
+**Downloads (all versions):** certificate, any chapter, the whole book (53 pages), a personal portfolio,
+the action research journal, reference list, survey, proposal, nine templates (.docx); observation counts,
+interview codes and cohort report (CSV); statistics results (.txt).
+
 ## Run it
 ```bash
 npm install
@@ -58,8 +69,7 @@ A ready-built copy is committed as `Research_Methodology_Orientation_Book.html`.
   wide release. Tool screens (calculators, forms) have bilingual titles but English working labels.
 - Downloads (templates, proposal and survey as .docx, CSV report, progress backup) use the viewer's
   download prompt when the book is published on claude.ai, and a normal browser download elsewhere.
-- Data are stored only in each user's browser. The facilitator desk shows a sample cohort; connecting a shared
-  database (e.g. Supabase or Firebase, as the master prompt suggests) is the next step for real multi-DIET use,
-  along with login, messaging and mentorship features.
+- Without the online setup (claude.ai copy, standalone HTML), work stays in the browser and the facilitator
+  desk shows a sample cohort. Not yet built: direct messaging, mentorship, video library, leaderboards, Hindi.
 - Content lives in `src/data/modules.ts` (English) and `src/data/modules.kn.ts` (Kannada). A test fails if the
   two editions drift apart.
