@@ -3,6 +3,7 @@ import type { ToolId } from '../data/modules';
 import { useStore } from '../lib/store';
 import * as st from '../lib/stats';
 import { saveFile, hosted } from '../lib/save';
+import { useToolState } from '../lib/store';
 import { buildDocx, textToBlocks, Block } from '../lib/docx';
 import { DownloadButton } from '../lib/DownloadButton';
 import { referenceList } from '../lib/exports';
@@ -42,7 +43,10 @@ const Area = ({ label, ...p }: { label: string } & React.TextareaHTMLAttributes<
 
 /* ---------- Research question builder ---------- */
 function RQ() {
-  const [v, setV] = useState({ pop: 'Grade 5 children in bilingual KPS sections', vari: 'oral comprehension in English', cmp: 'children in Kannada-medium sections', place: 'Kalaburagi district', measure: 'scores on a 20-item listening comprehension test' });
+  const [v, setV] = useToolState('rq', { pop: 'Grade 5 children in bilingual KPS sections', vari: 'oral comprehension in English', cmp: 'children in Kannada-medium sections', place: 'Kalaburagi district', measure: 'scores on a 20-item listening comprehension test' });
+  const rq = v.cmp ? `What is the difference in ${v.vari} between ${v.pop} and ${v.cmp} in ${v.place}?` : `What is the level of ${v.vari} among ${v.pop} in ${v.place}?`;
+  const h0 = `There is no significant difference in ${v.vari} between ${v.pop} and ${v.cmp}.`;
+  const od = `${v.vari[0]?.toUpperCase() ?? ''}${v.vari.slice(1)} will be measured by ${v.measure}.`;
   const u = (k: keyof typeof v) => (e: React.ChangeEvent<HTMLInputElement>) => setV({ ...v, [k]: e.target.value });
   return (
     <div className="grid gap-3">
@@ -52,10 +56,16 @@ function RQ() {
       <Field label="Where?" value={v.place} onChange={u('place')} />
       <Field label="Measured how? (operational definition)" value={v.measure} onChange={u('measure')} />
       <div className="ka space-y-2">
-        <p><strong>Research question:</strong> {v.cmp ? `What is the difference in ${v.vari} between ${v.pop} and ${v.cmp} in ${v.place}?` : `What is the level of ${v.vari} among ${v.pop} in ${v.place}?`}</p>
-        {v.cmp && <p><strong>Null hypothesis (H₀):</strong> There is no significant difference in {v.vari} between {v.pop} and {v.cmp}.</p>}
-        <p><strong>Operational definition:</strong> {v.vari} will be measured by {v.measure}.</p>
+        <p><strong>Research question:</strong> {rq}</p>
+        {v.cmp && <p><strong>Null hypothesis (H₀):</strong> {h0}</p>}
+        <p><strong>Operational definition:</strong> {od}</p>
       </div>
+      <DownloadButton label="Download my research question (.docx)" filename="My-Research-Question.docx" make={() => [
+        { t: 'title', text: 'My Research Question\nನನ್ನ ಸಂಶೋಧನಾ ಪ್ರಶ್ನೆ' },
+        { t: 'table', header: false, widths: [3000, 6000], rows: [['Population', v.pop], ['Variable', v.vari], ['Comparison', v.cmp || '—'], ['Place', v.place], ['Measured by', v.measure]] },
+        { t: 'h2', text: 'Research question' }, { t: 'p', text: rq },
+        ...(v.cmp ? [{ t: 'h2', text: 'Null hypothesis (H₀)' } as Block, { t: 'p', text: h0 } as Block] : []),
+        { t: 'h2', text: 'Operational definition' }, { t: 'p', text: od }]} />
     </div>
   );
 }
@@ -70,7 +80,7 @@ const ETHICS = [
   { q: 'Will an intervention be withheld from a comparison group?', yes: 'Offer the intervention to the comparison group after the study (wait-list design).' },
 ];
 function Ethics() {
-  const [a, setA] = useState<Record<number, boolean>>({});
+  const [a, setA] = useToolState<Record<number, boolean>>('ethics', {});
   const needs = ETHICS.filter((_, i) => a[i]);
   return (
     <div className="space-y-3">
@@ -93,13 +103,18 @@ function Ethics() {
           <li>Share findings back with schools and SDMCs.</li>
         </ul>
       </div>
+      <DownloadButton label="Download my ethics plan (.docx)" filename="My-Ethics-Plan.docx" make={() => [
+        { t: 'title', text: 'Ethics Plan\nನೈತಿಕ ಯೋಜನೆ' },
+        { t: 'table', widths: [6500, 2500], rows: [['Question', 'Answer'], ...ETHICS.map((e, i) => [e.q, a[i] === undefined ? 'Not answered' : a[i] ? 'Yes' : 'No'])] },
+        { t: 'h1', text: 'Safeguards for my study' },
+        ...['Administrative permission from the DDPI/BEO to visit schools.', 'Plain-language information sheet in Kannada (or the participants’ language).', ...needs.map((e) => e.yes), 'Share findings back with schools and SDMCs.'].map((x): Block => ({ t: 'bullet', text: x }))]} />
     </div>
   );
 }
 
 /* ---------- Sample size ---------- */
 function Sample() {
-  const [pop, setPop] = useState(1240), [conf, setConf] = useState<'90' | '95' | '99'>('95'), [m, setM] = useState(5), [p, setP] = useState(50);
+  const [pop, setPop] = useToolState('sample_pop', 1240), [conf, setConf] = useToolState<'90' | '95' | '99'>('sample_conf', '95'), [m, setM] = useToolState('sample_margin', 5), [p, setP] = useToolState('sample_p', 50);
   const n = st.sampleSize(pop, conf, m / 100, p / 100);
   return (
     <div className="grid gap-3 sm:grid-cols-2">
@@ -111,6 +126,10 @@ function Sample() {
       <div className="ka sm:col-span-2">
         <p className="text-2xl font-bold">n = {n}</p>
         <p className="text-sm">Add 10–15% for non-response (≈ {Math.ceil(n * 1.15)}). If you stratify (e.g. by block or medium), split n in proportion to each stratum’s size.</p>
+        <div className="mt-2"><DownloadButton label="Download calculation (.docx)" filename="Sample-Size-Calculation.docx" make={() => [
+          { t: 'title', text: 'Sample Size Calculation\nಮಾದರಿ ಗಾತ್ರ ಲೆಕ್ಕಾಚಾರ' },
+          { t: 'table', header: false, widths: [5000, 4000], rows: [['Population size', pop ? String(pop) : 'Unknown (infinite)'], ['Confidence level', `${conf}%`], ['Margin of error', `±${m}%`], ['Expected proportion', `${p}%`], ['Required sample size (n)', String(n)], ['With 15% allowance for non-response', String(Math.ceil(n * 1.15))]] },
+          { t: 'note', text: 'n₀ = z²·p(1−p)/e², corrected for a finite population: n = n₀ / (1 + (n₀ − 1)/N).' }]} /></div>
       </div>
     </div>
   );
@@ -197,8 +216,8 @@ function Stats() {
 /* ---------- Survey builder ---------- */
 type SQ = { text: string; type: 'Multiple choice' | 'Likert (5-point)' | 'Yes/No' | 'Open text'; options: string };
 function Survey() {
-  const [title, setTitle] = useState('School Library Use Survey – Head Teachers');
-  const [qs, setQs] = useState<SQ[]>([
+  const [title, setTitle] = useToolState('survey_title', 'School Library Use Survey – Head Teachers');
+  const [qs, setQs] = useToolState<SQ[]>('survey_questions', [
     { text: 'Does your school have a separate library room?', type: 'Yes/No', options: '' },
     { text: 'How often is a library period held for Grades 6–8?', type: 'Multiple choice', options: 'Daily, Weekly, Monthly, Never' },
     { text: 'Children in my school enjoy reading library books.', type: 'Likert (5-point)', options: '' },
@@ -262,13 +281,13 @@ function Coding() {
 
 /* ---------- Mixed methods selector ---------- */
 function Mixed() {
-  const [q, setQ] = useState<string | null>(null);
+  const [q, setQ] = useToolState<string | null>('mixed_need', null);
   const designs: Record<string, string> = {
     explain: 'Explanatory sequential (QUAN → qual): analyse scores first, then interview to explain patterns.',
     explore: 'Exploratory sequential (QUAL → quan): explore meanings first, then build and test a tool.',
     compare: 'Convergent (QUAN + QUAL together): collect both at once and compare for agreement.',
   };
-  const [rows, setRows] = useState([['High-drop schools', 'Mean fell 4 marks Gr 5→6', 'Teachers: new subject teachers, no handover'], ['Low-drop schools', 'Mean fell 1 mark', 'Teachers: same teacher continues Gr 5–6'], ['', '', '']]);
+  const [rows, setRows] = useToolState('mixed_rows', [['High-drop schools', 'Mean fell 4 marks Gr 5→6', 'Teachers: new subject teachers, no handover'], ['Low-drop schools', 'Mean fell 1 mark', 'Teachers: same teacher continues Gr 5–6'], ['', '', '']]);
   return (
     <div className="space-y-3">
       <p className="font-semibold">What do you mainly need?</p>
@@ -280,7 +299,11 @@ function Mixed() {
       <p className="font-semibold">Joint display</p>
       <div className="overflow-x-auto"><table className="text-sm w-full"><thead><tr><th className="text-left">Case / group</th><th className="text-left">Quantitative finding</th><th className="text-left">Qualitative finding</th></tr></thead>
         <tbody>{rows.map((r, i) => <tr key={i}>{r.map((c, j) => <td key={j}><input className="input" value={c} onChange={(e) => setRows(rows.map((rr, ii) => ii === i ? rr.map((cc, jj) => jj === j ? e.target.value : cc) : rr))} /></td>)}</tr>)}</tbody></table></div>
-      <button className="btn-ghost" onClick={() => setRows([...rows, ['', '', '']])}>Add row</button>
+      <div className="flex flex-wrap gap-2"><button className="btn-ghost" onClick={() => setRows([...rows, ['', '', '']])}>Add row</button>
+      <DownloadButton label="Download design and joint display (.docx)" filename="Mixed-Methods-Design.docx" make={() => [
+        { t: 'title', text: 'Mixed Methods Design\nಮಿಶ್ರ ವಿಧಾನ ವಿನ್ಯಾಸ' },
+        { t: 'h2', text: 'Chosen design' }, { t: 'p', text: q ? designs[q] : 'Not yet chosen.' },
+        { t: 'h2', text: 'Joint display' }, { t: 'table', rows: [['Case / group', 'Quantitative finding', 'Qualitative finding'], ...rows.filter((r) => r.some((c) => c.trim()))] }]} /></div>
     </div>
   );
 }
@@ -332,7 +355,7 @@ function Observation() {
 
 /* ---------- Stakeholder map ---------- */
 function Stakeholder() {
-  const [list, setList] = useState([
+  const [list, setList] = useToolState('stakeholders', [
     { n: 'Parents of Grade 8 girls', i: 'High', f: 'Low' }, { n: 'SDMC president', i: 'High', f: 'High' },
     { n: 'Head teacher', i: 'High', f: 'High' }, { n: 'Anganwadi worker', i: 'Low', f: 'Low' }, { n: 'Gram panchayat member', i: 'Low', f: 'High' },
   ]);
@@ -340,7 +363,7 @@ function Stakeholder() {
   const cell = (i: string, f: string) => list.filter((x) => x.i === i && x.f === f);
   const Q = ({ i, f, t }: { i: string; f: string; t: string }) => (
     <div className="border rounded-lg p-2 min-h-[90px]"><p className="text-xs font-semibold text-teal-800">{t}</p>
-      {cell(i, f).map((x) => <p key={x.n} className="text-sm">• {x.n}</p>)}</div>);
+      {cell(i, f).map((x) => <p key={x.n} className="text-sm">• {x.n} <button className="text-rose-700 text-xs" aria-label={`Remove ${x.n}`} onClick={() => setList(list.filter((y) => y !== x))}>✕</button></p>)}</div>);
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-2 gap-2">
@@ -352,6 +375,12 @@ function Stakeholder() {
         {(['High', 'Low'] as const).flatMap((i) => (['High', 'Low'] as const).map((f) => (
           <button key={i + f} className="btn-ghost" disabled={!n.trim()} onClick={() => { setList([...list, { n, i, f }]); setN(''); }}>Interest {i} · Influence {f}</button>)))}
       </div>
+      <DownloadButton label="Download stakeholder map (.docx)" filename="Stakeholder-Map.docx" make={() => {
+        const names = (i: string, f: string) => cell(i, f).map((x) => `• ${x.n}`).join('\n') || '—';
+        return [{ t: 'title', text: 'Stakeholder Map\nಪಾಲುದಾರರ ನಕ್ಷೆ' },
+          { t: 'table', widths: [1800, 3600, 3600], rows: [['', 'High influence', 'Low influence'], ['High interest', `Partner closely\n${names('High', 'High')}`, `Keep informed and involve\n${names('High', 'Low')}`], ['Low interest', `Keep satisfied\n${names('Low', 'High')}`, `Monitor\n${names('Low', 'Low')}`]] },
+          { t: 'table', rows: [['Stakeholder', 'Interest', 'Influence', 'How they will be involved'], ...list.map((x) => [x.n, x.i, x.f, ''])] }];
+      }} />
     </div>
   );
 }
@@ -435,13 +464,17 @@ const QC: [string, string[]][] = [
   ['Analysis and reporting', ['Tests suit the data', 'Effect sizes are reported', 'Non-significant results are reported', 'Limitations are stated', 'Recommendations follow from findings']],
 ];
 function Quality() {
-  const [c, setC] = useState<Record<string, boolean>>({});
+  const [c, setC] = useToolState<Record<string, boolean>>('quality', {});
   const all = QC.flatMap(([, xs]) => xs), score = all.filter((x) => c[x]).length;
   return (
     <div className="space-y-3">
       {QC.map(([h, xs]) => <fieldset key={h}><legend className="font-semibold">{h}</legend>
         {xs.map((x) => <label key={x} className="flex gap-2 text-sm"><input type="checkbox" checked={!!c[x]} onChange={(e) => setC({ ...c, [x]: e.target.checked })} />{x}</label>)}</fieldset>)}
       <p className="ka"><strong>{score}/{all.length}</strong> criteria met. {score === all.length ? 'Ready for external review.' : 'Unchecked items are your revision list.'}</p>
+      <DownloadButton label="Download checklist (.docx)" filename="Quality-Checklist.docx" make={() => [
+        { t: 'title', text: 'Quality Checklist\nಗುಣಮಟ್ಟ ಪರಿಶೀಲನಾ ಪಟ್ಟಿ' }, { t: 'p', text: `${score}/${all.length} criteria met.` },
+        { t: 'table', widths: [6500, 1200, 1300], rows: [['Criterion', 'Met?', 'Stage'], ...QC.flatMap(([h, xs]) => xs.map((x) => [x, c[x] ? 'Yes' : 'No', h]))] },
+        ...(score < all.length ? [{ t: 'h2', text: 'Revision list' } as Block, ...all.filter((x) => !c[x]).map((x): Block => ({ t: 'bullet', text: x }))] : [])]} />
     </div>
   );
 }

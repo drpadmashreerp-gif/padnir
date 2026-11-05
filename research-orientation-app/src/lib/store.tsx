@@ -50,3 +50,18 @@ export function streak(days: string[]) {
   while (set.has(d.toISOString().slice(0, 10))) { n++; d.setDate(d.getDate() - 1); }
   return n;
 }
+
+/**
+ * State for a tool that a participant builds up (a research question, a checklist, a map).
+ * Kept with the rest of their work: on the device, and online when signed in.
+ */
+export function useToolState<T>(key: string, init: T): [T, (v: T | ((prev: T) => T)) => void] {
+  const { s, set } = useStore();
+  const k = `__tool_${key}`;
+  const read = (raw?: string): T => { try { return raw ? (JSON.parse(raw) as T) : init; } catch { return init; } };
+  const setter = (v: T | ((prev: T) => T)) => set((st) => {
+    const next = typeof v === 'function' ? (v as (p: T) => T)(read(st.proposal[k])) : v;
+    return { proposal: { ...st.proposal, [k]: JSON.stringify(next) } };
+  });
+  return [read(s.proposal[k]), setter];
+}

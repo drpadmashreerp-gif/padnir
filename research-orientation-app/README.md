@@ -65,6 +65,8 @@ emailed code; progress, notes, journal, proposal and activity responses are save
 devices; facilitators see the real cohort, give feedback and post announcements; every chapter has a
 discussion board. Database rules (`supabase/schema.sql`) keep each participant's work private.
 
+**Every tool has a download** of the participant's own work, and that work is kept between visits (on the device, and online when signed in).
+
 **Downloads (all versions):** certificate, any chapter, the whole book (53 pages), a personal portfolio,
 the action research journal, reference list, survey, proposal, nine templates (.docx); observation counts,
 interview codes and cohort report (CSV); statistics results (.txt).

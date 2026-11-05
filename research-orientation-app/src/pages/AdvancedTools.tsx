@@ -1,7 +1,7 @@
 // Part II tools: alignment matrix, AI prompt planner, data screening, technique chooser,
 // EFA, CFA reliability/validity, SEM fit checker and bootstrap mediation.
 import { useMemo, useState } from 'react';
-import { useStore } from '../lib/store';
+import { useStore, useToolState } from '../lib/store';
 import { DownloadButton } from '../lib/DownloadButton';
 import type { Block } from '../lib/docx';
 import * as mv from '../lib/multivariate';
@@ -144,8 +144,11 @@ export function Screen() {
 }
 
 /* ---------- Technique chooser ---------- */
+const AIMS: Record<string, string> = { compare: 'Compare groups', relate: 'Relate two variables', predict: 'Predict an outcome', explore: 'Explore a scale\'s structure', confirm: 'Confirm a scale\'s structure', model: 'Test a model of constructs' };
+const DVS: Record<string, string> = { continuous: 'Scores / continuous', categorical: 'Categories', binary: 'Yes / no' };
 export function Chooser() {
-  const [aim, setAim] = useState('compare'), [dv, setDv] = useState('continuous'), [groups, setGroups] = useState('2'), [paired, setPaired] = useState(false), [normal, setNormal] = useState(true);
+  const [aim, setAim] = useToolState('chooser_aim', 'compare'), [dv, setDv] = useToolState('chooser_dv', 'continuous'), [groups, setGroups] = useToolState('chooser_groups', '2'), [paired, setPaired] = useToolState('chooser_paired', false), [normal, setNormal] = useToolState('chooser_normal', true);
+  const [rq, setRq] = useToolState('chooser_rq', '');
   const rec = (() => {
     if (aim === 'explore') return ['Exploratory factor analysis (EFA)', 'SPSS: Analyze → Dimension Reduction → Factor · R: psych::fa · Python: factor_analyzer', 'Check KMO and Bartlett first (EFA tool).'];
     if (aim === 'confirm') return ['Confirmatory factor analysis (CFA)', 'AMOS · R: lavaan::cfa · Python: semopy', 'Report fit, loadings, CR, AVE and discriminant validity (CFA calculator).'];
@@ -173,6 +176,13 @@ export function Chooser() {
       </>}
       {(aim === 'compare' || aim === 'relate') && dv === 'continuous' && <label className="flex items-center gap-1 text-sm"><input type="checkbox" checked={normal} onChange={(e) => setNormal(e.target.checked)} /> Data roughly normal and interval-level (n ≥ 30 per group helps)</label>}
       <div className="ka"><p className="text-lg font-bold">{rec[0]}</p><p className="text-sm">{rec[1]}</p><p className="text-sm">{rec[2]}</p></div>
+      <label className="block"><span className="label">Your research question (optional, included in the download)</span><input id="chooser-rq" className="input" value={rq} onChange={(e) => setRq(e.target.value)} /></label>
+      <DownloadButton label="Download my analysis plan (.docx)" filename="Analysis-Plan.docx" make={() => [
+        { t: 'title', text: 'Analysis Plan\nವಿಶ್ಲೇಷಣಾ ಯೋಜನೆ' },
+        { t: 'table', header: false, widths: [3500, 5500], rows: [['Research question', rq || '—'], ['Aim', AIMS[aim] ?? aim], ...(['compare', 'relate', 'predict'].includes(aim) ? [['Outcome variable', DVS[dv] ?? dv]] : []),
+          ...(aim === 'compare' && dv === 'continuous' ? [['Groups / occasions', groups === '2' ? 'Two' : 'Three or more'], ['Paired', paired ? 'Yes' : 'No']] : []),
+          ...((aim === 'compare' || aim === 'relate') && dv === 'continuous' ? [['Parametric assumptions reasonable', normal ? 'Yes' : 'No']] : []),
+          ['Recommended technique', rec[0]], ['Where to run it', rec[1]], ['Notes', rec[2]]] }]} />
     </div>
   );
 }
@@ -266,7 +276,7 @@ export function Cfa() {
 
 /* ---------- SEM fit checker ---------- */
 export function Fit() {
-  const [v, setV] = useState({ chi2: '141.6', df: '87', n: '260', cfi: '.97', tli: '.96', rmsea: '', srmr: '.046' });
+  const [v, setV] = useToolState('fit', { chi2: '141.6', df: '87', n: '260', cfi: '.97', tli: '.96', rmsea: '', srmr: '.046' });
   const num = (x: string) => (x.trim() === '' ? undefined : Number(x));
   const r = mv.judgeFit({ chi2: num(v.chi2), df: num(v.df), n: num(v.n), cfi: num(v.cfi), tli: num(v.tli), rmsea: num(v.rmsea), srmr: num(v.srmr) });
   const okAll = r.rows.filter((x) => x.verdict !== 'n/a');
@@ -281,7 +291,12 @@ export function Fit() {
       <table className="text-sm w-full"><thead><tr className="text-left"><th>Index</th><th>Value</th><th>Guideline</th><th>Verdict</th></tr></thead>
         <tbody>{r.rows.map((x) => <tr key={x.index} className="border-t"><td>{x.index}</td><td>{f2(x.value, 3)}</td><td className="text-slate-600">{x.rule}</td><td><Tone v={x.verdict} /></td></tr>)}</tbody></table>
       <div className="ka text-sm"><p className="font-semibold">Overall: {overall}</p><p>{sentence}</p>
-        <button className="btn-ghost mt-1" onClick={async () => setCopied(await copy(sentence))}>{copied ? 'Copied ✓' : 'Copy sentence'}</button></div>
+        <span className="flex flex-wrap gap-2 mt-1"><button className="btn-ghost" onClick={async () => setCopied(await copy(sentence))}>{copied ? 'Copied ✓' : 'Copy sentence'}</button>
+        <DownloadButton label="Download fit report (.docx)" filename="SEM-Model-Fit.docx" make={() => [
+          { t: 'title', text: 'Model Fit Assessment\nಮಾದರಿ ಹೊಂದಾಣಿಕೆ ಮೌಲ್ಯಮಾಪನ' },
+          { t: 'table', rows: [['Index', 'Value', 'Guideline', 'Verdict'], ...r.rows.map((x) => [x.index, f2(x.value, 3), x.rule, x.verdict])] },
+          { t: 'h2', text: `Overall: ${overall}` }, { t: 'h2', text: 'Results sentence (APA)' }, { t: 'p', text: sentence },
+          { t: 'note', text: 'Guidelines: Hu & Bentler (1999); Kline (2016).' }]} /></span></div>
       <p className="text-xs text-slate-500">Guidelines from Hu & Bentler (1999) and Kline (2016). Judge fit from several indices together, and never modify a model only to improve fit.</p>
     </div>
   );
@@ -317,6 +332,12 @@ export function Mediation() {
         </svg>
         <table className="text-sm"><tbody>{[['Indirect effect (a × b)', f2(res.indirect, 3)], ['95% bootstrap CI', `[${f2(res.ciLow, 3)}, ${f2(res.ciHigh, 3)}]`], ['Direct effect (c′)', f2(res.cPrime, 3)], ['Total effect (c)', f2(res.c, 3)], ['Bootstrap samples', String(res.boots)]].map(([k, v]) => <tr key={k} className="border-t"><td className="pr-4 font-semibold">{k}</td><td>{v}</td></tr>)}</tbody></table>
         <p className="ka text-sm">{sig ? `The indirect effect is significant: the 95% bootstrap interval excludes zero. ${h[cols[0]]} is associated with ${h[cols[2]]} partly through ${h[cols[1]]}.` : 'The 95% bootstrap interval includes zero, so the indirect effect is not supported.'} Unstandardised OLS estimates on observed scores; in a full SEM, use latent variables and 5,000 bootstrap samples.</p>
+        <DownloadButton label="Download mediation results (.docx)" filename="Mediation-Results.docx" make={() => [
+          { t: 'title', text: 'Mediation Analysis\nಮಧ್ಯಸ್ಥಿಕೆ ವಿಶ್ಲೇಷಣೆ' },
+          { t: 'p', text: `Model: ${h[cols[0]]} (X) → ${h[cols[1]]} (M) → ${h[cols[2]]} (Y).` },
+          { t: 'table', rows: [['Path / effect', 'Estimate'], ['a (X → M)', f2(res.a, 3)], ['b (M → Y, controlling X)', f2(res.b, 3)], ['Direct effect c′', f2(res.cPrime, 3)], ['Total effect c', f2(res.c, 3)], ['Indirect effect a × b', f2(res.indirect, 3)], ['95% bootstrap CI', `[${f2(res.ciLow, 3)}, ${f2(res.ciHigh, 3)}]`], ['Bootstrap samples', String(res.boots)]] },
+          { t: 'p', text: sig ? `The indirect effect of ${h[cols[0]]} on ${h[cols[2]]} through ${h[cols[1]]} was significant, b = ${f2(res.indirect, 3)}, 95% CI [${f2(res.ciLow, 3)}, ${f2(res.ciHigh, 3)}].` : `The indirect effect was not significant, b = ${f2(res.indirect, 3)}, 95% CI [${f2(res.ciLow, 3)}, ${f2(res.ciHigh, 3)}].` },
+          { t: 'note', text: 'Ordinary least squares on observed scores with percentile bootstrap confidence intervals.' }]} />
       </>)}
     </div>
   );
