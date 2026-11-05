@@ -6,7 +6,7 @@ import { TEMPLATES, Template } from '../data/templates';
 import { buildDocx } from '../lib/docx';
 import { saveFile, outcomeText, hosted } from '../lib/save';
 import { useCloud, cloudEnabled } from '../lib/cloud';
-import { Announcements, FacilitatorLive } from './Online';
+import { Announcements, FacilitatorLive, AccessAdmin } from './Online';
 import { DownloadButton } from '../lib/DownloadButton';
 import { bookBlocks, certificateBlocks, portfolioBlocks } from '../lib/exports';
 import { useStore, streak } from '../lib/store';
@@ -239,7 +239,7 @@ export function Facilitator() {
   if (cloudEnabled) return (
     <div className="max-w-6xl mx-auto space-y-4">
       <h2 className="text-2xl font-bold text-teal-900">Facilitator desk · ಸಂಪನ್ಮೂಲ ವ್ಯಕ್ತಿ ವಿಭಾಗ</h2>
-      {cloud.isStaff ? <FacilitatorLive /> : <p className="card">This desk is for facilitators. Ask your administrator to give your account the facilitator role.</p>}
+      {cloud.isStaff ? <>{cloud.isAdmin && <AccessAdmin />}<FacilitatorLive /></> : <p className="card">This desk is for facilitators. Ask your administrator to give your account the facilitator role.</p>}
     </div>
   );
   return <FacilitatorSample />;

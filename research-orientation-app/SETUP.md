@@ -4,8 +4,10 @@ This takes about 30 minutes, once. You need: your Gmail account, and your GitHub
 (`drpadmashreerp-gif`). Everything below is free.
 
 When you finish, the book will be at **https://drpadmashreerp-gif.github.io/padnir/**.
-Participants sign in with their email (no password). Their work is saved online, facilitators see the
-real cohort, and every chapter has a discussion board.
+**Only people you allow can use it.** Each person signs in with their email and a password. An account can
+be created only for an email you have added in the app's *Access control* panel; removing an email stops
+that person's access at once. Their work is saved online, facilitators see the real cohort, and every
+chapter has a discussion board.
 
 ---
 
@@ -20,8 +22,10 @@ real cohort, and every chapter has a discussion board.
    - Plan: **Free**. Click **Create new project** and wait 1–2 minutes.
 3. Open **SQL Editor** (left menu) → **New query**.
    Open the file `research-orientation-app/supabase/schema.sql` from this repository on GitHub,
-   copy all of it, paste it into the editor, and click **Run**. You should see *Success. No rows returned*.
-   (It is safe to run again later.)
+   copy all of it and paste it into the editor.
+   **Before running:** scroll to the last lines and replace `your.email@example.com` with **your own email
+   in lower case**. This makes you the first administrator. Then click **Run**. You should see
+   *Success. No rows returned*. (It is safe to run again later.)
 4. Open **Project Settings → API** (or **Connect** at the top). Copy two values into a note:
    - **Project URL** — looks like `https://abcdefgh.supabase.co`
    - **anon / public key** — a long text starting `eyJ…` (this key is meant to be public; the database rules
@@ -42,17 +46,21 @@ their code. Sending through your Gmail fixes this (up to about 500 emails a day)
    - Save.
 4. **Authentication → Rate Limits**: set *Rate limit for sending emails* to `100` per hour (so a whole
    batch can sign in during a session). Save.
-5. **Authentication → Emails → Templates**. The app signs people in with a **code**, so the code must be
-   in the email. Edit **both** the *Magic Link* and the *Confirm signup* templates and replace the body with:
+5. **Authentication → Sign In / Providers → Email**: keep **Enable Email provider**, **Allow new users to
+   sign up** and **Confirm email** all switched on (the database itself refuses anyone not on your list).
+   Set **Minimum password length** to `8`. Save.
+6. **Authentication → Emails → Templates**. The app confirms emails and resets passwords with a
+   **6-digit code**, so the code must be in the email. Edit the **Confirm signup** and **Reset Password**
+   templates and replace each body with:
 
    ```html
    <h2>Research Methodology Orientation</h2>
-   <p>Your sign-in code is: <strong style="font-size:24px">{{ .Token }}</strong></p>
-   <p>ನಿಮ್ಮ ಸೈನ್ ಇನ್ ಸಂಕೇತ: <strong>{{ .Token }}</strong></p>
+   <p>Your code is: <strong style="font-size:24px">{{ .Token }}</strong></p>
+   <p>ನಿಮ್ಮ ಸಂಕೇತ: <strong>{{ .Token }}</strong></p>
    <p>Type this code in the book. It expires in one hour. If you did not ask for it, ignore this email.</p>
    ```
-   Subject for both: `Your sign-in code · ಸೈನ್ ಇನ್ ಸಂಕೇತ`. Save each.
-6. **Authentication → URL Configuration** → *Site URL*: `https://drpadmashreerp-gif.github.io/padnir/` → Save.
+   Subject: `Your code · ನಿಮ್ಮ ಸಂಕೇತ`. Save each.
+7. **Authentication → URL Configuration** → *Site URL*: `https://drpadmashreerp-gif.github.io/padnir/` → Save.
 
 ## Part 3 — Publish on GitHub Pages (about 5 minutes)
 
@@ -68,21 +76,22 @@ their code. Sending through your Gmail fixes this (up to about 500 emails a day)
    **Actions** tab → *Deploy book to GitHub Pages* → **Run workflow**.
 4. After 2–3 minutes, open **https://drpadmashreerp-gif.github.io/padnir/**.
 
-## Part 4 — Make yourself the administrator (2 minutes)
+## Part 4 — Create your account and invite people (5 minutes)
 
-1. Open the book → **My account** → sign in with your email and the code you receive.
-   Fill in your name and DIET and click **Save profile**.
-2. In Supabase → **SQL Editor** → **New query**, run (with your own email):
-   ```sql
-   update public.profiles set role = 'admin'
-   where id = (select id from auth.users where email = 'drpadmashreerp@gmail.com');
-   ```
-3. Reload the book. **Facilitator desk** now appears. As administrator you can make any signed-in person
-   a *facilitator* from the Role column of the cohort table.
+1. Open the book. It shows a sign-in screen. Choose **First time? Create your account**, enter the email
+   you put in the setup script and a password, then type the 6-digit code from the email.
+   You are now the administrator. Open **My account** to add your name and DIET.
+2. Open **Facilitator desk → Access control**. Paste the emails of the people you allow (one per line or
+   separated by commas), choose their role (participant, facilitator or administrator), add a note such as
+   the batch or DIET, and click **Give access**.
+3. Tell them: open the link, choose **Create your account**, use that same email, set a password, and type
+   the code they receive. Anyone whose email is not on your list cannot create an account.
+4. To stop someone's access, click **Remove** next to their email. Their saved work is kept; adding the email
+   again restores access. People can reset a forgotten password themselves with **Forgot password?**.
 
 ## Running a batch
 
-- Share the link with participants. Each one signs in once per device with their email and a code.
+- Share the link only with people you have added in Access control. Each signs in with email and password.
 - Facilitators see every participant's quiz scores and activity responses, send feedback, post
   announcements on the cover page, and export the cohort report (CSV).
 - Participants can download their certificate, chapters, the whole book and their portfolio as Word files.
@@ -95,6 +104,12 @@ their code. Sending through your Gmail fixes this (up to about 500 emails a day)
 - **Backups:** Supabase → Database → Backups, or Table Editor → Export to CSV.
 - **Privacy:** data stays in your Supabase project. Participants see only their own work; discussion posts
   and announcements are visible to everyone signed in.
-- **The claude.ai copy** and the standalone HTML file keep working without accounts; work stays on the device.
+- **What the login protects:** using the app, everyone's saved work, activity responses, discussions,
+  announcements and the cohort data. The book's text itself is part of the website's code, and this
+  repository is public, so a technically skilled person could still read the chapter text without signing in.
+  To keep the text private as well, make the repository private and host it on a service that supports
+  private repositories (GitHub Pages needs a paid plan for that).
+- **The claude.ai copy** is private to you unless you share it, and has no login. The standalone HTML file in
+  this repository has no login either; anyone who downloads it can read the book offline.
 - **Link check:** the workflow *Check book links* tests every link in the Resource library each Monday and
   shows a red cross in the Actions tab if one breaks.

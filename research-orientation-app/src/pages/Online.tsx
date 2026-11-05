@@ -10,7 +10,6 @@ const fmt = (d: string) => new Date(d).toLocaleString('en-IN', { dateStyle: 'med
 /* ---------- Account: sign in with an emailed code, then profile ---------- */
 export function Account() {
   const { session, profile, sync, saveProfile, signOut } = useCloud();
-  const [email, setEmail] = useState(''), [code, setCode] = useState(''), [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false), [msg, setMsg] = useState('');
   const [form, setForm] = useState({ name: '', institution: '', designation: '' });
   useEffect(() => { if (profile) setForm({ name: profile.name, institution: profile.institution, designation: profile.designation }); }, [profile?.id]);
@@ -23,36 +22,7 @@ export function Account() {
     </div>
   );
 
-  const send = async () => {
-    setBusy(true); setMsg('');
-    const { error } = await supabase!.auth.signInWithOtp({ email: email.trim(), options: { shouldCreateUser: true } });
-    setBusy(false);
-    if (error) setMsg(error.message); else { setSent(true); setMsg('We emailed you a 6-digit code. It can take a minute to arrive; check spam too. · 6 ಅಂಕಿಯ ಸಂಕೇತವನ್ನು ಇಮೇಲ್ ಮಾಡಲಾಗಿದೆ.'); }
-  };
-  const verify = async () => {
-    setBusy(true); setMsg('');
-    const { error } = await supabase!.auth.verifyOtp({ email: email.trim(), token: code.trim(), type: 'email' });
-    setBusy(false);
-    if (error) setMsg('That code did not work. Check it, or ask for a new one. · ಸಂಕೇತ ಸರಿಯಿಲ್ಲ.');
-  };
-
-  if (!session) return (
-    <div className="max-w-md mx-auto card space-y-3">
-      <h2 className="text-2xl font-bold text-teal-900">Sign in · ಸೈನ್ ಇನ್</h2>
-      <p className="text-sm text-slate-600">Sign in to save your progress online and use it on any device, send activities to your facilitator, and join chapter discussions. No password needed. · ಪಾಸ್‌ವರ್ಡ್ ಬೇಡ.</p>
-      <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); sent ? verify() : send(); }}>
-        <label className="block"><span className="label">Email · ಇಮೇಲ್</span>
-          <input id="email" type="email" required className="input" value={email} disabled={sent} onChange={(e) => setEmail(e.target.value)} autoComplete="email" /></label>
-        {sent && <label className="block"><span className="label">6-digit code · 6 ಅಂಕಿಯ ಸಂಕೇತ</span>
-          <input id="code" inputMode="numeric" pattern="[0-9]{6,8}" required className="input tracking-widest text-lg" value={code} onChange={(e) => setCode(e.target.value)} autoComplete="one-time-code" /></label>}
-        <div className="flex flex-wrap gap-2">
-          <button className="btn-primary" disabled={busy}>{sent ? 'Sign in · ಸೈನ್ ಇನ್' : 'Email me a code · ಸಂಕೇತ ಕಳುಹಿಸಿ'}</button>
-          {sent && <button type="button" className="btn-ghost" onClick={() => { setSent(false); setCode(''); setMsg(''); }}>Use a different email</button>}
-        </div>
-      </form>
-      {msg && <p role="status" className="text-sm">{msg}</p>}
-    </div>
-  );
+  if (!session) return <p className="card">Please sign in. · ದಯವಿಟ್ಟು ಸೈನ್ ಇನ್ ಮಾಡಿ.</p>;
 
   return (
     <div className="max-w-xl mx-auto card space-y-3">
@@ -68,6 +38,7 @@ export function Account() {
       </form>
       {msg && <p role="status" className="text-sm">{msg}</p>}
       <p className="text-xs text-slate-500">Signing out removes your work from this device; it stays saved online. · ಸೈನ್ ಔಟ್ ಮಾಡಿದಾಗ ಈ ಸಾಧನದಿಂದ ತೆಗೆಯಲಾಗುತ್ತದೆ; ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಉಳಿಯುತ್ತದೆ.</p>
+      <ChangePassword />
     </div>
   );
 }
@@ -156,7 +127,6 @@ export function Announcements() {
 type Row = Profile & { quiz: Record<string, number>; read: number; updated?: string };
 type Sub = { id: number; user_id: string; module_id: string; body: string; feedback: string | null; updated_at: string };
 export function FacilitatorLive() {
-  const { isAdmin } = useCloud();
   const [rows, setRows] = useState<Row[] | null>(null), [subs, setSubs] = useState<Sub[]>([]), [fb, setFb] = useState<Record<number, string>>({});
   const [filter, setFilter] = useState<'pending' | 'all'>('pending'), [err, setErr] = useState('');
   const load = async () => {
@@ -194,15 +164,11 @@ export function FacilitatorLive() {
       <div className="card overflow-x-auto">
         <div className="flex flex-wrap justify-between gap-2 mb-2"><h3 className="font-semibold">Cohort</h3>
           <span className="flex gap-2"><button className="btn-ghost" onClick={load}>Refresh</button><button className="btn-ghost" onClick={() => saveFile('cohort-report.csv', csv, 'text/csv')}>Export report (CSV)</button></span></div>
-        <table className="text-sm w-full"><thead><tr className="text-left"><th>Name</th><th>DIET</th>{MODULES.map((m) => <th key={m.id} className="text-center">{m.no}</th>)}<th>Status</th>{isAdmin && <th>Role</th>}</tr></thead>
+        <table className="text-sm w-full"><thead><tr className="text-left"><th>Name</th><th>DIET</th>{MODULES.map((m) => <th key={m.id} className="text-center">{m.no}</th>)}<th>Status</th></tr></thead>
           <tbody>{rows.map((r) => (
             <tr key={r.id} className="border-t"><td>{r.name || <em className="text-slate-400">no name yet</em>}</td><td>{r.institution}</td>
               {MODULES.map((m) => { const x = r.quiz[m.id]; return <td key={m.id} className={`text-center ${x === undefined ? 'text-slate-400' : x >= 60 ? 'text-emerald-700' : 'text-amber-700'}`}>{x ?? '·'}</td>; })}
               <td>{passed(r) === MODULES.length ? 'Complete' : passed(r) < 4 ? <span className="text-rose-700 font-semibold">Needs support</span> : 'On track'}</td>
-              {isAdmin && <td><select aria-label={`Role for ${r.name}`} className="input py-1" value={r.role} onChange={async (e) => {
-                const { error } = await supabase!.from('profiles').update({ role: e.target.value as Role }).eq('id', r.id);
-                if (error) alert(error.message); load();
-              }}><option value="participant">participant</option><option value="facilitator">facilitator</option><option value="admin">admin</option></select></td>}
             </tr>))}</tbody></table>
       </div>
       <div className="card">
@@ -228,5 +194,96 @@ export function FacilitatorLive() {
           </div>); })}
       </div>
     </div>
+  );
+}
+
+/* ---------- Access control (administrator only) ---------- */
+type Person = { email: string; role: Role; note: string; added_at: string; joined: boolean; user_id: string | null; name: string; institution: string; last_sign_in: string | null };
+export function AccessAdmin() {
+  const { session } = useCloud();
+  const [people, setPeople] = useState<Person[] | null>(null), [err, setErr] = useState(''), [msg, setMsg] = useState('');
+  const [emails, setEmails] = useState(''), [role, setRole] = useState<Role>('participant'), [note, setNote] = useState(''), [filter, setFilter] = useState('');
+  const load = async () => { const { data, error } = await supabase!.rpc('admin_people'); if (error) setErr(error.message); else { setErr(''); setPeople(data as Person[]); } };
+  useEffect(() => { load(); }, []);
+  const add = async () => {
+    const list = [...new Set(emails.split(/[\s,;]+/).map((x) => x.trim().toLowerCase()).filter(Boolean))];
+    const bad = list.filter((x) => !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x));
+    if (bad.length) { setErr(`Not a valid email: ${bad.join(', ')}`); return; }
+    if (!list.length) return;
+    const { error } = await supabase!.from('allowed_users').upsert(list.map((email) => ({ email, role, note })), { onConflict: 'email' });
+    if (error) { setErr(error.message); return; }
+    setEmails(''); setNote(''); setMsg(`${list.length} email(s) given access. Tell them to open the book and choose "Create your account".`); load();
+  };
+  const setPersonRole = async (p: Person, r: Role) => {
+    const a = await supabase!.from('allowed_users').update({ role: r }).eq('email', p.email);
+    const b = p.user_id ? await supabase!.from('profiles').update({ role: r }).eq('id', p.user_id) : { error: null };
+    if (a.error || b.error) setErr((a.error ?? b.error)!.message); else load();
+  };
+  const remove = async (p: Person) => {
+    const { error } = await supabase!.from('allowed_users').delete().eq('email', p.email);
+    if (error) setErr(error.message); else { setMsg(`${p.email} can no longer use the book. Their saved work is kept; add the email again to restore access.`); load(); }
+  };
+  const me = session?.user.email?.toLowerCase();
+  const shown = (people ?? []).filter((p) => !filter || (p.email + p.name + p.institution + p.note).toLowerCase().includes(filter.toLowerCase()));
+  const csv = () => ['Email,Role,Note,Joined,Name,DIET,Last sign-in,Added', ...(people ?? []).map((p) => [p.email, p.role, p.note, p.joined ? 'Yes' : 'No', p.name, p.institution, p.last_sign_in ?? '', p.added_at].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(','))].join('\n');
+  return (
+    <section className="card space-y-3">
+      <div className="flex flex-wrap justify-between items-center gap-2">
+        <h3 className="font-semibold">Access control · ಪ್ರವೇಶ ನಿಯಂತ್ರಣ</h3>
+        <span className="flex gap-2"><button className="btn-ghost" onClick={load}>Refresh</button><button className="btn-ghost" onClick={() => saveFile('people-with-access.csv', csv(), 'text/csv')}>Export list (CSV)</button></span>
+      </div>
+      <p className="text-sm text-slate-600">Only the emails below can create an account and use the book. Removing an email stops access immediately.</p>
+      <form className="grid sm:grid-cols-[1fr_auto] gap-2 border rounded-lg p-3" onSubmit={(e) => { e.preventDefault(); add(); }}>
+        <label className="sm:col-span-2"><span className="label">Give access to (one or more emails, separated by commas or new lines)</span>
+          <textarea id="acc-emails" className="input min-h-[70px]" placeholder="lecturer1@example.com, lecturer2@example.com" value={emails} onChange={(e) => setEmails(e.target.value)} /></label>
+        <div className="flex flex-wrap gap-2">
+          <label><span className="label">Role</span><select id="acc-role" className="input" value={role} onChange={(e) => setRole(e.target.value as Role)}><option value="participant">Participant</option><option value="facilitator">Facilitator</option><option value="admin">Administrator</option></select></label>
+          <label className="flex-1 min-w-[160px]"><span className="label">Note (batch, DIET…)</span><input id="acc-note" className="input" value={note} onChange={(e) => setNote(e.target.value)} /></label>
+        </div>
+        <button className="btn-primary self-end" disabled={!emails.trim()}>Give access</button>
+      </form>
+      {msg && <p role="status" className="text-sm text-teal-900">{msg}</p>}
+      {err && <p role="alert" className="text-sm text-rose-700">{err}</p>}
+      <div className="flex flex-wrap gap-3 items-center text-sm">
+        <input aria-label="Search people" className="input max-w-xs" placeholder="Search" value={filter} onChange={(e) => setFilter(e.target.value)} />
+        {people && <span>{people.length} with access · {people.filter((p) => p.joined).length} joined · {people.filter((p) => !p.joined).length} not yet joined</span>}
+      </div>
+      {!people ? <p className="text-sm">Loading…</p> : (
+        <div className="overflow-x-auto"><table className="text-sm w-full min-w-[640px]"><thead><tr className="text-left"><th>Email</th><th>Name / DIET</th><th>Status</th><th>Role</th><th /></tr></thead>
+          <tbody>{shown.map((p) => (
+            <tr key={p.email} className="border-t">
+              <td>{p.email}{p.note && <span className="block text-xs text-slate-500">{p.note}</span>}</td>
+              <td>{p.name || '—'}{p.institution && <span className="block text-xs text-slate-500">{p.institution}</span>}</td>
+              <td>{p.joined ? <span className="chip bg-emerald-100 text-emerald-900">Joined</span> : <span className="chip bg-amber-100 text-amber-900">Invited</span>}
+                {p.last_sign_in && <span className="block text-xs text-slate-500">Last sign-in {new Date(p.last_sign_in).toLocaleDateString('en-IN')}</span>}</td>
+              <td><select aria-label={`Role for ${p.email}`} className="input py-1" value={p.role} disabled={p.email === me} onChange={(e) => setPersonRole(p, e.target.value as Role)}>
+                <option value="participant">participant</option><option value="facilitator">facilitator</option><option value="admin">admin</option></select></td>
+              <td>{p.email !== me && <ConfirmRemove onConfirm={() => remove(p)} />}</td>
+            </tr>))}</tbody></table></div>)}
+    </section>
+  );
+}
+function ConfirmRemove({ onConfirm }: { onConfirm: () => void }) {
+  const [ask, setAsk] = useState(false);
+  return ask
+    ? <span className="flex gap-1"><button className="btn bg-rose-700 text-white py-1" onClick={() => { setAsk(false); onConfirm(); }}>Remove access</button><button className="btn-ghost py-1" onClick={() => setAsk(false)}>Cancel</button></span>
+    : <button className="text-rose-700 text-sm" onClick={() => setAsk(true)}>Remove</button>;
+}
+
+/* ---------- Change password ---------- */
+export function ChangePassword() {
+  const [pw, setPw] = useState(''), [pw2, setPw2] = useState(''), [msg, setMsg] = useState(''), [busy, setBusy] = useState(false);
+  return (
+    <form className="grid gap-2 border-t pt-3" onSubmit={async (e) => {
+      e.preventDefault(); setBusy(true);
+      const { error } = await supabase!.auth.updateUser({ password: pw });
+      setBusy(false); setMsg(error ? error.message : 'Password changed · ಪಾಸ್‌ವರ್ಡ್ ಬದಲಾಯಿತು'); if (!error) { setPw(''); setPw2(''); }
+    }}>
+      <h3 className="font-semibold">Change password · ಪಾಸ್‌ವರ್ಡ್ ಬದಲಿಸಿ</h3>
+      <input id="new-pw" type="password" className="input" placeholder="New password (at least 8 characters)" autoComplete="new-password" minLength={8} required value={pw} onChange={(e) => setPw(e.target.value)} />
+      <input id="new-pw2" type="password" className="input" placeholder="Type it again" autoComplete="new-password" required value={pw2} onChange={(e) => setPw2(e.target.value)} />
+      <button className="btn-ghost justify-self-start" disabled={busy || pw.length < 8 || pw !== pw2}>Change password</button>
+      {msg && <p role="status" className="text-sm">{msg}</p>}
+    </form>
   );
 }

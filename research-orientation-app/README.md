@@ -60,8 +60,9 @@ mode, backup/restore, offline use (PWA).
 
 ## Online version (accounts, saved work, live cohort)
 Hosted on GitHub Pages with a free Supabase database: **https://drpadmashreerp-gif.github.io/padnir/**
-once set up. Follow **[SETUP.md](SETUP.md)** (about 30 minutes, once). Online, people sign in with an
-emailed code; progress, notes, journal, proposal and activity responses are saved online and merged across
+once set up. Follow **[SETUP.md](SETUP.md)** (about 30 minutes, once). Online, the book is **invite-only**: people sign in
+with email and password, an account can be created only for an email the administrator has added in
+*Access control*, and removing an email stops access at once. Online, progress, notes, journal, proposal and activity responses are saved online and merged across
 devices; facilitators see the real cohort, give feedback and post announcements; every chapter has a
 discussion board. Database rules (`supabase/schema.sql`) keep each participant's work private.
 

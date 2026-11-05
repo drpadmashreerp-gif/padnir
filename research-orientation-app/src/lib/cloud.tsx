@@ -21,6 +21,9 @@ type Ctx = {
   saveSubmission: (moduleId: string, body: string) => Promise<void>;
   refreshFeedback: () => Promise<void>;
   signOut: () => Promise<void>;
+  /** null while checking; false when signed in but not (or no longer) on the allowed list. */
+  member: boolean | null;
+  authReady: boolean;
 };
 const C = createContext<Ctx>(null!);
 export const useCloud = () => useContext(C);
@@ -33,13 +36,15 @@ export function CloudProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [sync, setSync] = useState<SyncState>(cloudEnabled ? 'loading' : 'off');
+  const [member, setMember] = useState<boolean | null>(null);
+  const [authReady, setAuthReady] = useState(!cloudEnabled);
   const ready = useRef(false);          // true once the online copy has been merged in
   const timer = useRef<number>();
   const latest = useRef(s); latest.current = s;
 
   useEffect(() => {
     if (!supabase) return;
-    supabase.auth.getSession().then(({ data }) => { setSession(data.session); if (!data.session) setSync('signed-out'); });
+    supabase.auth.getSession().then(({ data }) => { setSession(data.session); setAuthReady(true); if (!data.session) setSync('signed-out'); });
     const { data } = supabase.auth.onAuthStateChange((_e, sess) => { setSession(sess); if (!sess) { setProfile(null); ready.current = false; setSync('signed-out'); } });
     return () => data.subscription.unsubscribe();
   }, []);
@@ -72,6 +77,11 @@ export function CloudProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     (async () => {
       setSync('loading');
+      setMember(null);
+      const { data: allowed, error: aErr } = await supabase.rpc('am_i_allowed');
+      if (cancelled) return;
+      if (aErr || allowed !== true) { setMember(false); setSync('signed-out'); return; }
+      setMember(true);
       const uid = session.user.id;
       const [{ data: prof }, { data: prog }] = await Promise.all([
         supabase.from('profiles').select('id,name,institution,designation,role').eq('id', uid).maybeSingle(),
@@ -129,7 +139,7 @@ export function CloudProvider({ children }: { children: ReactNode }) {
 
   const isStaff = profile?.role === 'facilitator' || profile?.role === 'admin';
   return (
-    <C.Provider value={{ session, profile, sync, isStaff, isAdmin: profile?.role === 'admin', saveProfile, saveSubmission, refreshFeedback, signOut }}>
+    <C.Provider value={{ session, profile, sync, isStaff, isAdmin: profile?.role === 'admin', saveProfile, saveSubmission, refreshFeedback, signOut, member, authReady }}>
       {children}
     </C.Provider>
   );
