@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html { font-size: var(--fs, 16px); }
+body { @apply bg-slate-50 text-slate-800; }
+.hc body, .hc { --tw-bg-opacity: 1; }
+.hc body { background: #000; color: #fff; }
+.hc .card { background: #000 !important; color: #fff !important; border-color: #fff !important; }
+.hc a, .hc button { outline-color: #ff0; }
+.card { @apply bg-white rounded-xl border border-slate-200 p-4 shadow-sm; }
+.btn { @apply inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-600; }
+.btn-primary { @apply btn bg-teal-700 text-white hover:bg-teal-800; }
+.btn-ghost { @apply btn bg-slate-100 text-slate-700 hover:bg-slate-200; }
+.input { @apply w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600; }
+.label { @apply block text-sm font-semibold text-slate-700 mb-1; }
+.chip { @apply inline-block rounded-full bg-teal-50 text-teal-800 px-2 py-0.5 text-xs font-semibold; }
+.ka { @apply border-l-4 border-amber-500 bg-amber-50 p-3 rounded-r-lg; }
+.hc .ka { background: #000; color: #fff; }
+[lang="kn"], .kn { font-family: 'Noto Sans Kannada', 'Inter', sans-serif; line-height: 1.75; }
+.kn { @apply text-slate-700 border-l-4 border-teal-200 pl-3 mt-2 md:mt-0 md:border-l md:border-slate-200 md:pl-6; }
+@media print { aside, nav, header, .no-print { display: none !important; } main { padding: 0 !important; } }

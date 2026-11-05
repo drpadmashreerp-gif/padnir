@@ -1,0 +1,26 @@
+# Netlify settings for the Research Methodology Orientation book (works with a private repository).
+# Supabase keys are set in Netlify: Site configuration → Environment variables
+#   VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
+[build]
+  base    = "research-orientation-app"
+  command = "npm test && npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  # Keep the book text out of the website code; chapters load from the database after sign-in.
+  VITE_PRIVATE_CONTENT = "true"
+
+# Basic security headers. The book uses hash links (#/book/…), so no redirect rules are needed.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
