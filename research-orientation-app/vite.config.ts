@@ -8,6 +8,9 @@ import { fileURLToPath } from 'node:url';
 export default defineConfig(({ mode }) => {
   const env = { ...loadEnv(mode, process.cwd(), ''), ...process.env };
   const priv = env.VITE_PRIVATE_CONTENT === 'true';
+  if (priv && mode === 'production' && !env.VITE_SUPABASE_URL) {
+    throw new Error('VITE_PRIVATE_CONTENT is on but VITE_SUPABASE_URL is not set: the site would have no chapters. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (see SETUP.md).');
+  }
   const book = fileURLToPath(new URL(priv ? './src/data/content/stub.ts' : './src/data/content/index.ts', import.meta.url));
   return {
     plugins: [react()],
