@@ -3,7 +3,8 @@
 This takes about 30 minutes, once. You need: your Gmail account, and your GitHub account
 (`drpadmashreerp-gif`). Everything below is free.
 
-When you finish, the book will be at **https://drpadmashreerp-gif.github.io/padnir/**.
+When you finish, the book will be at an address such as **https://dsert-research-orientation.netlify.app**
+(you choose the name in Part 3). The repository is kept **private**, so the book's text is not public.
 **Only people you allow can use it.** Each person signs in with their email and a password. An account can
 be created only for an email you have added in the app's *Access control* panel; removing an email stops
 that person's access at once. Their work is saved online, facilitators see the real cohort, and every
@@ -60,21 +61,46 @@ their code. Sending through your Gmail fixes this (up to about 500 emails a day)
    <p>Type this code in the book. It expires in one hour. If you did not ask for it, ignore this email.</p>
    ```
    Subject: `Your code · ನಿಮ್ಮ ಸಂಕೇತ`. Save each.
-7. **Authentication → URL Configuration** → *Site URL*: `https://drpadmashreerp-gif.github.io/padnir/` → Save.
+7. **Authentication → URL Configuration** → *Site URL*: your Netlify address from Part 3 (you can come back
+   to this step after Part 3) → Save.
 
-## Part 3 — Publish on GitHub Pages (about 5 minutes)
+## Part 3 — Make the repository private and publish on Netlify (about 10 minutes)
 
-1. Open **https://github.com/drpadmashreerp-gif/padnir/settings/pages**.
-   Under *Build and deployment* → *Source*, choose **GitHub Actions**.
-2. Open **https://github.com/drpadmashreerp-gif/padnir/settings/variables/actions** →
-   **New repository variable**, twice:
-   - Name `VITE_SUPABASE_URL` · Value: the Project URL from Part 1.
-   - Name `VITE_SUPABASE_ANON_KEY` · Value: the anon public key from Part 1.
-   (Use the **Variables** tab, not Secrets.)
-3. Merge this branch into the repository's default branch (or ask Claude to open a pull request for you).
-   The workflow **Deploy book to GitHub Pages** starts by itself. You can also start it from the
-   **Actions** tab → *Deploy book to GitHub Pages* → **Run workflow**.
-4. After 2–3 minutes, open **https://drpadmashreerp-gif.github.io/padnir/**.
+**A. Make the repository private**
+
+1. First merge this branch into the repository's default branch (or ask Claude to open a pull request).
+2. Open **https://github.com/drpadmashreerp-gif/padnir/settings** → scroll to **Danger Zone** →
+   **Change repository visibility** → **Make private** → confirm.
+   From now on only you (and people you add as collaborators) can see the code, the chapter text and the
+   old commits. The GitHub Pages workflow switches itself off for a private repository.
+
+**B. Create the Netlify site (free)**
+
+1. Go to **https://app.netlify.com/signup** and choose **Sign up with GitHub**.
+2. Click **Add new site** (called **Add new project** in newer screens) **→ Import an existing project → GitHub**. When GitHub asks, choose
+   **Only select repositories → padnir** and click **Install & Authorize**. This lets Netlify read your
+   private repository; nobody else gains access.
+3. Pick **padnir**. Netlify reads the settings from the `netlify.toml` file in the repository, so the boxes
+   fill in by themselves: *Base directory* `research-orientation-app`, *Build command*
+   `npm test && npm run build`, *Publish directory* `research-orientation-app/dist`. Leave them as they are.
+   Under *Branch to deploy*, choose the branch you merged into.
+4. Click **Add environment variables** (or after the first deploy: **Site configuration → Environment
+   variables → Add a variable**) and add two:
+   - `VITE_SUPABASE_URL` = the Project URL from Part 1
+   - `VITE_SUPABASE_ANON_KEY` = the anon public key from Part 1
+5. Click **Deploy**. After 2–3 minutes the site is live at a random address such as
+   `https://wonderful-name-123.netlify.app`.
+6. Give it a clear name: **Site configuration → Change site name** → for example
+   `dsert-research-orientation` → the address becomes `https://dsert-research-orientation.netlify.app`.
+7. Go back to Supabase → **Authentication → URL Configuration** → set *Site URL* to this address (Part 2, step 7).
+8. If you added the environment variables after the first deploy, open **Deploys → Trigger deploy →
+   Deploy site** once so the build picks them up.
+
+From now on, every change merged into that branch is published automatically.
+
+*Prefer GitHub Pages instead?* It works only while the repository is public (or with a paid GitHub plan):
+Settings → Pages → Source **GitHub Actions**, and add the same two values under
+Settings → Secrets and variables → Actions → **Variables**.
 
 ## Part 4 — Create your account and invite people (5 minutes)
 
@@ -105,10 +131,11 @@ their code. Sending through your Gmail fixes this (up to about 500 emails a day)
 - **Privacy:** data stays in your Supabase project. Participants see only their own work; discussion posts
   and announcements are visible to everyone signed in.
 - **What the login protects:** using the app, everyone's saved work, activity responses, discussions,
-  announcements and the cohort data. The book's text itself is part of the website's code, and this
-  repository is public, so a technically skilled person could still read the chapter text without signing in.
-  To keep the text private as well, make the repository private and host it on a service that supports
-  private repositories (GitHub Pages needs a paid plan for that).
+  announcements and the cohort data. With the repository private, the source and its history are hidden too.
+  The published website still sends the book to the browser after it loads, so a technically skilled
+  visitor to the Netlify address could read the chapter text in the page code without signing in;
+  share the address only with the people you invite.
+- **Netlify free plan:** 100 GB of traffic and 300 build minutes a month — plenty for training batches.
 - **The claude.ai copy** is private to you unless you share it, and has no login. A standalone HTML copy
   (`npm run build:single`) also has no login, so share it only with people you trust; it is not kept in this repository.
 - **Link check:** the workflow *Check book links* tests every link in the Resource library each Monday and
